@@ -1,7 +1,6 @@
 package com.ll.topcastingbe.domain.cart.entity;
 
 import com.ll.topcastingbe.domain.option.entity.Option;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,31 +21,31 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CartOption {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cart_id")
-	private Cart cart;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "option_id")
-	private Option option;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "option_id")
+    private Option option;
 
-	private int productQuantity;
+    private int productQuantity;
 
-	public CartOption(Cart cart, Option option, int productQuantity) {
-		this.cart = cart;
-		this.option = option;
-		this.productQuantity = productQuantity;
-	}
+    public CartOption(Cart cart, Option option, int productQuantity) {
+        this.cart = cart;
+        this.option = option;
+        this.productQuantity = productQuantity;
+    }
 
-	public void changeProductQuantity(int quantity) {
-		productQuantity = quantity;
-	}
+    public void changeProductQuantity(int quantity) {
+        productQuantity = quantity;
+    }
 
-	public boolean isNotCartOwner(Long memberId) {
-		return !this.cart.isMatchingMemberId(memberId);
-	}
+    public boolean isNotCartOwner(Long memberId) {
+        return !this.cart.isMatchingMemberId(memberId);
+    }
 }

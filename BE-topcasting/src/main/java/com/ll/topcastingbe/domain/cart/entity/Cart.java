@@ -1,7 +1,6 @@
 package com.ll.topcastingbe.domain.cart.entity;
 
 import com.ll.topcastingbe.domain.member.entity.Member;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -21,19 +20,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @Getter
 public class Cart {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-	public Cart(Member member) {
-		this.member = member;
-	}
+    public Cart(Member member) {
+        this.member = member;
+    }
 
-	public boolean isMatchingMemberId(Long memberId) {
-		return this.member.checkMemberIdMatch(memberId);
-	}
+    public boolean isMatchingMemberId(Long memberId) {
+        return this.member.checkMemberIdMatch(memberId);
+    }
 }
