@@ -1,8 +1,8 @@
 package com.ll.topcastingbe.domain.option.service;
 
-import com.ll.topcastingbe.domain.item.entity.Item;
-import com.ll.topcastingbe.domain.item.exception.ItemNotExistException;
-import com.ll.topcastingbe.domain.item.repository.ItemRepository;
+import com.ll.topcastingbe.domain.product.entity.Product;
+import com.ll.topcastingbe.domain.product.exception.ProductNotExistException;
+import com.ll.topcastingbe.domain.product.repository.ProductRepository;
 import com.ll.topcastingbe.domain.option.dto.request.OptionCreateRequestDto;
 import com.ll.topcastingbe.domain.option.dto.request.OptionModifyRequestDto;
 import com.ll.topcastingbe.domain.option.entity.Option;
@@ -19,17 +19,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class OptionService {
 
-    private final ItemRepository itemRepository;
+    private final ProductRepository productRepository;
     private final OptionRepository optionRepository;
 
     @Transactional
     public Long addOption(OptionCreateRequestDto createDto) {
         //해당 아이템이 존재하는지 검증
-        Item item = itemRepository.findById(createDto.getItemId()).orElseThrow(ItemNotExistException::new);
+        Product product = productRepository.findById(createDto.getItemId()).orElseThrow(ProductNotExistException::new);
 
         //Option 엔티티 생성
         Option option = Option.builder()
-                .item(item)
+                .product(product)
                 .colorName(createDto.getColorName())
                 .stock(createDto.getStock())
                 .build();

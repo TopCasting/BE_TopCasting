@@ -1,6 +1,6 @@
 package com.ll.topcastingbe.domain.option.entity;
 
-import com.ll.topcastingbe.domain.item.entity.Item;
+import com.ll.topcastingbe.domain.product.entity.Product;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,13 +26,13 @@ public class Option {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Item item;
+	private Product product;
 
 	private String colorName;
 	private int stock;
 
-	public void deductionStock(Long itemQuantity) {
-		this.stock -= itemQuantity;
+	public void deductionStock(Long productQuantity) {
+		this.stock -= productQuantity;
 	}
 
 	public void change(String colorName, int stock) {

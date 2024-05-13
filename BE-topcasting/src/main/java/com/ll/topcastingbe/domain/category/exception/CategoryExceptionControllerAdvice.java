@@ -1,6 +1,5 @@
 package com.ll.topcastingbe.domain.category.exception;
 
-import com.ll.topcastingbe.domain.item.exception.ItemNotExistException;
 import com.ll.topcastingbe.global.dto.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

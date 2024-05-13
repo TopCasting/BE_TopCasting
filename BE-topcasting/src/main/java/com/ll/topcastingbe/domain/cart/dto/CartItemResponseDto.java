@@ -20,10 +20,10 @@ public class CartItemResponseDto {
 	public static CartItemResponseDto toDto(CartItem cartItem) {
 		return CartItemResponseDto.builder()
 			.cartItemId(cartItem.getId())
-			.itemImage(cartItem.getOption().getItem().getImage().getPath())
-			.itemName(cartItem.getOption().getItem().getItemName())
+			.itemImage(cartItem.getOption().getProduct().getImage().getPath())
+			.itemName(cartItem.getOption().getProduct().getProductName())
 			.itemColor(cartItem.getOption().getColorName())
 			.itemQuantity(cartItem.getItemQuantity())
-			.itemPrice(cartItem.getOption().getItem().getItemPrice()).build();
+			.itemPrice(cartItem.getOption().getProduct().getProductPrice()).build();
 	}
 }
