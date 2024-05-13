@@ -1,23 +1,24 @@
 package com.ll.topcastingbe.cart.repository;
 
-import com.ll.topcastingbe.domain.cart.repository.CartItemRepository;
+import com.ll.topcastingbe.domain.cart.repository.CartOptionRepository;
 import com.ll.topcastingbe.domain.cart.repository.CartRepository;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CartItemRepositoryTest {
+class CartOptionRepositoryTest {
 
 	@Autowired
-	private CartItemRepository cartItemRepository;
+	private CartOptionRepository cartOptionRepository;
 
 	@Autowired
 	private CartRepository cartRepository;
 
 	@Test
-	void findByCartIdTest(){
+	void findByCartIdTest() {
 		Long cartId = 1L;
-		cartItemRepository.findByCartId(cartId);
+		cartOptionRepository.findByCartId(cartId);
 	}
 }

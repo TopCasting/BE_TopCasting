@@ -9,17 +9,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
-public class CartItem {
+public class CartOption {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,19 +34,19 @@ public class CartItem {
 	@JoinColumn(name = "option_id")
 	private Option option;
 
-	private int itemQuantity;
+	private int productQuantity;
 
-	public CartItem(Cart cart, Option option, int itemQuantity) {
+	public CartOption(Cart cart, Option option, int productQuantity) {
 		this.cart = cart;
 		this.option = option;
-		this.itemQuantity = itemQuantity;
+		this.productQuantity = productQuantity;
 	}
 
-	public void changeItemQuantity(int quantity) {
-		itemQuantity = quantity;
+	public void changeProductQuantity(int quantity) {
+		productQuantity = quantity;
 	}
 
-	public boolean isMatched(Long memberId){
-		return this.getCart().getMember().getId().equals(memberId);
+	public boolean isNotCartOwner(Long memberId) {
+		return !this.cart.isMatchingMemberId(memberId);
 	}
 }

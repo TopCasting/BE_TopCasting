@@ -9,14 +9,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
 public class Cart {
@@ -30,5 +31,9 @@ public class Cart {
 
 	public Cart(Member member) {
 		this.member = member;
+	}
+
+	public boolean isMatchingMemberId(Long memberId) {
+		return this.member.checkMemberIdMatch(memberId);
 	}
 }
