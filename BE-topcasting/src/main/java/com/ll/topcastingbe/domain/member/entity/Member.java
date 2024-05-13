@@ -77,4 +77,7 @@ public class Member {
     }
 
 
+    public boolean checkMemberIdMatch(Long memberId) {
+        return id.equals(memberId);
+    }
 }

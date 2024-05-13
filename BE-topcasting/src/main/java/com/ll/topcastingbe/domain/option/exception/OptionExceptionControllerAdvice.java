@@ -1,6 +1,5 @@
 package com.ll.topcastingbe.domain.option.exception;
 
-import com.ll.topcastingbe.domain.cart.exception.CartItemNotExistException;
 import com.ll.topcastingbe.global.dto.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

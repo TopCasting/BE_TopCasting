@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CartExceptionControllerAdvice {
 
     //카트에 해당 아이템을 찾을 수 없을때 발생하는 예외처리
-    @ExceptionHandler(CartItemNotExistException.class)
-    public ResponseEntity<ErrorResponseDto> handleCartItemNotExistExceptions(CartItemNotExistException ex) {
+    @ExceptionHandler(CartOptionNotExistException.class)
+    public ResponseEntity<ErrorResponseDto> handleCartItemNotExistExceptions(CartOptionNotExistException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponseDto.builder()
                         .code(HttpStatus.NOT_FOUND.toString())

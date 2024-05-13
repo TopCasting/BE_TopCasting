@@ -1,7 +1,7 @@
 package com.ll.topcastingbe.domain.member.service;
 
 import com.ll.topcastingbe.domain.cart.entity.Cart;
-import com.ll.topcastingbe.domain.cart.repository.CartItemRepository;
+import com.ll.topcastingbe.domain.cart.repository.CartOptionRepository;
 import com.ll.topcastingbe.domain.cart.repository.CartRepository;
 import com.ll.topcastingbe.domain.member.dto.AdditionalInfoRequestDto;
 import com.ll.topcastingbe.domain.member.dto.JoinRequestDto;
@@ -25,24 +25,24 @@ public class MemberService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
-    private final CartItemRepository cartItemRepository;
+    private final CartOptionRepository cartOptionRepository;
 
     @Transactional
     public void join(JoinRequestDto joinRequestDto) {
         Member member = Member.builder()
-                                .username(joinRequestDto.getUsername())
-                                .password(passwordEncoder.encode(joinRequestDto.getPassword()))
-                                .nickname(joinRequestDto.getNickname())
-                                .name(joinRequestDto.getName())
-                                .email(joinRequestDto.getEmail())
-                                .birthDate(joinRequestDto.getBirthDate())
-                                .phoneNumber(joinRequestDto.getPhoneNumber())
-                                .address(Address.builder()
-                                                 .address1(joinRequestDto.getAddress1())
-                                                 .address2(joinRequestDto.getAddress2())
-                                                 .zipcode(joinRequestDto.getZipcode())
-                                                 .build())
-                                .build();
+                .username(joinRequestDto.getUsername())
+                .password(passwordEncoder.encode(joinRequestDto.getPassword()))
+                .nickname(joinRequestDto.getNickname())
+                .name(joinRequestDto.getName())
+                .email(joinRequestDto.getEmail())
+                .birthDate(joinRequestDto.getBirthDate())
+                .phoneNumber(joinRequestDto.getPhoneNumber())
+                .address(Address.builder()
+                        .address1(joinRequestDto.getAddress1())
+                        .address2(joinRequestDto.getAddress2())
+                        .zipcode(joinRequestDto.getZipcode())
+                        .build())
+                .build();
         member.grantRole();
 
         memberRepository.save(member);
@@ -56,11 +56,9 @@ public class MemberService {
         return true;
     }
 
-
     public Member findMember(String username) {
         return memberRepository.findByUsername(username);
     }
-
 
     public MemberInfoResponseDto findMemberInfo(String username) {
         return new MemberInfoResponseDto(memberRepository.findByUsername(username));
@@ -73,16 +71,16 @@ public class MemberService {
         Member findMember = validateAndFindMember(memberId, password);
 
         Address address = Address.builder()
-                                  .address1(address1)
-                                  .address2(address2)
-                                  .zipcode(zipcode).build();
+                .address1(address1)
+                .address2(address2)
+                .zipcode(zipcode).build();
 
         findMember.changeDetails(nickname, email, address, phoneNumber);
     }
 
     private Member validateAndFindMember(Long memberId, String password) {
         Member member = memberRepository.findById(memberId)
-                                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new UserNotFoundException());
 
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new PasswordNotMatchException();
@@ -93,11 +91,11 @@ public class MemberService {
     @Transactional
     public void removeMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new UserNotFoundException());
         //장바구니가 있다면 장바구니 먼저 삭제
         Cart cart = cartRepository.findCartByMemberId(member.getId()).orElse(null);
         if (cart != null) {
-            cartItemRepository.deleteCartItemByCartId(cart.getId());
+            cartOptionRepository.deleteCartItemByCartId(cart.getId());
             cartRepository.delete(cart);
         }
         memberRepository.delete(member);
@@ -110,10 +108,10 @@ public class MemberService {
             return;
         }
         Address address = Address.builder()
-                                  .address1(requestDto.getAddress1())
-                                  .address2(requestDto.getAddress2())
-                                  .zipcode(requestDto.getZipcode())
-                                  .build();
+                .address1(requestDto.getAddress1())
+                .address2(requestDto.getAddress2())
+                .zipcode(requestDto.getZipcode())
+                .build();
         findMember.changeDetailsForSicailLogin(requestDto.getNickname(), address, requestDto.getPhoneNumber(),
                 requestDto.getBirthDate());
         findMember.grantRole();
