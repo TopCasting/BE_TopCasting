@@ -16,8 +16,8 @@ public class MemberModifyRequestDto {
     @NotEmpty
     private String passwordCheck;
     private String email;
-    private String address1;
-    private String address2;
+    private String primaryAddress;
+    private String secondaryAddress;
     private String zipcode;
     private String phoneNumber;
 
