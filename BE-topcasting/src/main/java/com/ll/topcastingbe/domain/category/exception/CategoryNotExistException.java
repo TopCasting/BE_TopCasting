@@ -1,6 +1,5 @@
 package com.ll.topcastingbe.domain.category.exception;
 
-import com.ll.topcastingbe.domain.item.exception.ItemErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

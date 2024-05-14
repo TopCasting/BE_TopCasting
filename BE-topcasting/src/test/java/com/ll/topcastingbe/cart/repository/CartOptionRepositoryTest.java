@@ -8,7 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
+<<<<<<<< HEAD:BE-topcasting/src/test/java/com/ll/topcastingbe/cart/repository/CartProductRepositoryTest.java
+class CartProductRepositoryTest {
+========
 class CartOptionRepositoryTest {
+>>>>>>>> develop:BE-topcasting/src/test/java/com/ll/topcastingbe/cart/repository/CartOptionRepositoryTest.java
 
 	@Autowired
 	private CartOptionRepository cartOptionRepository;

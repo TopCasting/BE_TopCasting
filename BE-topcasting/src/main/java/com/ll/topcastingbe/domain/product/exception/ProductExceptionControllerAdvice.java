@@ -1,4 +1,4 @@
-package com.ll.topcastingbe.domain.item.exception;
+package com.ll.topcastingbe.domain.product.exception;
 
 import com.ll.topcastingbe.global.dto.ErrorResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 @Slf4j
-public class ItemExceptionControllerAdvice {
+public class ProductExceptionControllerAdvice {
 
     //해당 아이템이 존재하지 않을때, 예외처리
-    @ExceptionHandler(ItemNotExistException.class)
-    public ResponseEntity<ErrorResponseDto> handleItemNotExistExceptions(ItemNotExistException ex) {
+    @ExceptionHandler(ProductNotExistException.class)
+    public ResponseEntity<ErrorResponseDto> handleItemNotExistExceptions(ProductNotExistException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponseDto.builder()
                         .code(HttpStatus.NOT_FOUND.toString())

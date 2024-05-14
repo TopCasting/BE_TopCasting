@@ -1,4 +1,4 @@
-package com.ll.topcastingbe.domain.item.dto.request;
+package com.ll.topcastingbe.domain.product.dto.request;
 
 import com.ll.topcastingbe.domain.option.dto.request.ItemCreateOptionRequestDto;
 import jakarta.validation.constraints.NotBlank;
@@ -11,18 +11,18 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ItemCreateRequestDto {
+public class ProductCreateRequestDto {
 
     @NotBlank
-    private String itemName;
+    private String productName;
     @Positive
     @NotNull
-    private BigDecimal itemPrice;
-    private List<ItemCreateOptionRequestDto> itemColors;
+    private BigDecimal productPrice;
+    private List<ItemCreateOptionRequestDto> productColors;
     @NotBlank
-    private String itemImage;
+    private String productImage;
     @NotBlank
-    private String itemDetailedImage;
+    private String productDetailedImage;
     @NotNull
     private Long mainCategoryId;
     @NotNull

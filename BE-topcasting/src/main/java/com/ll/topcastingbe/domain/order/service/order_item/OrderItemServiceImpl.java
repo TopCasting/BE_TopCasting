@@ -48,7 +48,7 @@ public class OrderItemServiceImpl implements OrderItemService {
     private Long getTotalPrice(final Option option, final AddOrderItemRequest addOrderItemRequest) {
         //todo 코드 더러움 수정 필요
         final Long totalPrice =
-                option.getItem().getItemPrice().longValue() *
+                option.getProduct().getProductPrice().longValue() *
                         addOrderItemRequest.itemQuantity();
 
         return totalPrice;

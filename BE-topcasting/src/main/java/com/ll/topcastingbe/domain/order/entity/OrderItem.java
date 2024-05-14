@@ -34,10 +34,10 @@ public class OrderItem {
     private Long itemQuantity;
 
     public String getItemName() {
-        return this.option.getItem().getItemName();
+        return this.option.getProduct().getProductName();
     }
 
     public String getItemImagePath() {
-        return this.option.getItem().getImage().getPath();
+        return this.option.getProduct().getImage().getPath();
     }
 }
