@@ -1,6 +1,6 @@
 package com.ll.topcastingbe.domain.order.dto.order.response;
 
-import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderItemResponse;
+import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponse;
 import com.ll.topcastingbe.domain.order.entity.Orders;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,12 +15,12 @@ public record FindOrderForAdminResponse(UUID orderId,
                                         String customerAddress,
                                         String orderStatus,
                                         LocalDateTime orderCreatedDate,
-                                        Long totalItemQuantity,
-                                        Long totalItemPrice,
-                                        List<FindOrderItemResponse> findOrderItemResponses) {
+                                        Long totalProductQuantity,
+                                        Long totalProductPrice,
+                                        List<FindOrderProductResponse> findOrderProductRespons) {
 
     public static FindOrderForAdminResponse of(final Orders order,
-                                               final List<FindOrderItemResponse> findOrderItemResponses,
+                                               final List<FindOrderProductResponse> findOrderProductRespons,
                                                final String paymentKey) {
         FindOrderForAdminResponse findOrdersResponse = FindOrderForAdminResponse.builder()
                 .paymentKey(paymentKey)
@@ -29,9 +29,9 @@ public record FindOrderForAdminResponse(UUID orderId,
                 .customerPhoneNumber(order.getCustomerPhoneNumber())
                 .customerAddress(order.getCustomerAddress())
                 .orderStatus(order.getOrderStatus().toString())
-                .totalItemQuantity(order.getTotalItemQuantity())
-                .totalItemPrice(order.getTotalItemPrice())
-                .findOrderItemResponses(findOrderItemResponses)
+                .totalProductQuantity(order.getTotalProductQuantity())
+                .totalProductPrice(order.getTotalProductPrice())
+                .findOrderProductRespons(findOrderProductRespons)
                 .build();
 
         return findOrdersResponse;

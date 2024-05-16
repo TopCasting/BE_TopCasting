@@ -5,12 +5,12 @@ import static com.ll.topcastingbe.domain.order.entity.OrderStatus.ORDER_REFUND_R
 
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderForAdminResponse;
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderResponse;
-import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderItemResponse;
+import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponse;
 import com.ll.topcastingbe.domain.order.entity.Orders;
 import com.ll.topcastingbe.domain.order.exception.EntityNotFoundException;
 import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
 import com.ll.topcastingbe.domain.order.repository.order.OrderRepository;
-import com.ll.topcastingbe.domain.order.service.order_item.OrderItemService;
+import com.ll.topcastingbe.domain.order.service.order_product.OrderProductService;
 import com.ll.topcastingbe.domain.payment.entity.Payment;
 import com.ll.topcastingbe.domain.payment.repository.PaymentRepository;
 import java.util.List;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AdminOrderServiceImpl implements AdminOrderService {
     private final OrderRepository orderRepository;
-    private final OrderItemService orderItemService;
+    private final OrderProductService orderProductService;
     private final OrderService orderService;
     private final PaymentRepository paymentRepository;
 
@@ -49,10 +49,10 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         final Orders order = orderService.findByOrderId(orderId);
         final Payment payment = paymentRepository.findByOrder(order)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
-        final List<FindOrderItemResponse> findOrderItemResponses =
-                orderItemService.findAllByOrderIdForAdmin(order.getId());
+        final List<FindOrderProductResponse> findOrderProductRespons =
+                orderProductService.findAllByOrderIdForAdmin(order.getId());
         final FindOrderForAdminResponse findOrderForAdminResponse =
-                FindOrderForAdminResponse.of(order, findOrderItemResponses, payment.getPaymentKey());
+                FindOrderForAdminResponse.of(order, findOrderProductRespons, payment.getPaymentKey());
         return findOrderForAdminResponse;
     }
 

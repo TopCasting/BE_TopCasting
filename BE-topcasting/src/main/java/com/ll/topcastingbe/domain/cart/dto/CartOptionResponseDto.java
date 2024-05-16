@@ -18,10 +18,10 @@ public class CartOptionResponseDto {
     public static CartOptionResponseDto toDto(CartOption cartOption) {
         return CartOptionResponseDto.builder()
                 .cartOptionId(cartOption.getId())
-                .productImage(cartOption.getOption().getItem().getImage().getPath())
-                .productName(cartOption.getOption().getItem().getItemName())
+                .productImage(cartOption.getOption().getProduct().getImage().getPath())
+                .productName(cartOption.getOption().getProduct().getProductName())
                 .productColor(cartOption.getOption().getColorName())
                 .productQuantity(cartOption.getProductQuantity())
-                .productPrice(cartOption.getOption().getItem().getItemPrice()).build();
+                .productPrice(cartOption.getOption().getProduct().getProductPrice()).build();
     }
 }

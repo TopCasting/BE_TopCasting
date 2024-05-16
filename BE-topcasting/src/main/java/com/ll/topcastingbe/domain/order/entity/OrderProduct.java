@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderItem {
+public class OrderProduct {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -31,13 +31,13 @@ public class OrderItem {
 
     private Long totalPrice;
 
-    private Long itemQuantity;
+    private Long productQuantity;
 
-    public String getItemName() {
+    public String getProductName() {
         return this.option.getProduct().getProductName();
     }
 
-    public String getItemImagePath() {
+    public String getProductImagePath() {
         return this.option.getProduct().getImage().getPath();
     }
 }

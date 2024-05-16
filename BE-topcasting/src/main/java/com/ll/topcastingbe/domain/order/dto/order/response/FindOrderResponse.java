@@ -1,6 +1,6 @@
 package com.ll.topcastingbe.domain.order.dto.order.response;
 
-import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderItemResponse;
+import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponse;
 import com.ll.topcastingbe.domain.order.entity.Orders;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,20 +14,20 @@ public record FindOrderResponse(UUID orderId,
                                 String customerAddress,
                                 String orderStatus,
                                 LocalDateTime orderCreatedDate,
-                                Long totalItemQuantity,
-                                Long totalItemPrice,
-                                List<FindOrderItemResponse> findOrderItemResponses) {
+                                Long totalProductQuantity,
+                                Long totalProductPrice,
+                                List<FindOrderProductResponse> findOrderProductRespons) {
 
-    public static FindOrderResponse of(final Orders order, final List<FindOrderItemResponse> findOrderItemResponses) {
+    public static FindOrderResponse of(final Orders order, final List<FindOrderProductResponse> findOrderProductRespons) {
         FindOrderResponse findOrdersResponse = FindOrderResponse.builder()
                 .orderId(order.getId())
                 .customerName(order.getCustomerName())
                 .customerPhoneNumber(order.getCustomerPhoneNumber())
                 .customerAddress(order.getCustomerAddress())
                 .orderStatus(order.getOrderStatus().toString())
-                .totalItemQuantity(order.getTotalItemQuantity())
-                .totalItemPrice(order.getTotalItemPrice())
-                .findOrderItemResponses(findOrderItemResponses)
+                .totalProductQuantity(order.getTotalProductQuantity())
+                .totalProductPrice(order.getTotalProductPrice())
+                .findOrderProductRespons(findOrderProductRespons)
                 .build();
 
         return findOrdersResponse;

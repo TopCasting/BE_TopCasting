@@ -33,9 +33,9 @@ public class ImageService {
     private String bucket;
 
     @Transactional
-    public Image uploadImage(String itemName, String base64) {
+    public Image uploadImage(String productName, String base64) {
 
-        ImageUploadDto imageUploadDto = createImageUploadDto(itemName, base64);
+        ImageUploadDto imageUploadDto = createImageUploadDto(productName, base64);
 
         MainImage mainImage = MainImage.builder()
                 .path(imageUploadDto.getImageUrl())
@@ -48,9 +48,9 @@ public class ImageService {
     }
 
     @Transactional
-    public DetailedImage uploadDetailedImage(String itemName, String base64) {
+    public DetailedImage uploadDetailedImage(String productName, String base64) {
 
-        ImageUploadDto imageUploadDto = createImageUploadDto(itemName, base64);
+        ImageUploadDto imageUploadDto = createImageUploadDto(productName, base64);
 
         DetailedImage detailedImage = DetailedImage.builder()
                 .path(imageUploadDto.getImageUrl())
@@ -62,7 +62,7 @@ public class ImageService {
         return imageRepository.save(detailedImage);
     }
 
-    private ImageUploadDto createImageUploadDto(String itemName, String base64) {
+    private ImageUploadDto createImageUploadDto(String productName, String base64) {
 
         byte[] decodedFile = Base64.getMimeDecoder().decode(base64.substring(base64.indexOf(",") + 1));
         String contentType = base64.substring(base64.indexOf(":"), base64.indexOf(";"));
@@ -74,7 +74,7 @@ public class ImageService {
         //S3에 '년/월/일/UUID_파일이름' 으로 저장
         LocalDate now = LocalDate.now();
         String datePath = now.format(DateTimeFormatter.ofPattern("yyyy/MM/dd/"));
-        String imageName = UUID.randomUUID() + "_" + itemName;
+        String imageName = UUID.randomUUID() + "_" + productName;
         String fullName = datePath + imageName;
 
         amazonS3.putObject(

@@ -18,7 +18,7 @@ public interface CartOptionRepository extends JpaRepository<CartOption, Long> {
     CartOption findByCartIdAndOptionId(@Param("cartId") Long cartId, @Param("optionId") Long optionId);
 
     @Query("select co from CartOption co join fetch co.cart c where co.id = :cartItemId")
-    Optional<CartOption> findByIdWithMember(@Param("cartItemId") Long cartItemId);
+    Optional<CartOption> findByIdWithMember(@Param("cartProductId") Long cartItemId);
 
     @Modifying(clearAutomatically = true) //벌크연산수행 & 수행후 영속성 컨텍스트 초기화
     @Query("delete from CartOption co where co.cart.id = :cartId")

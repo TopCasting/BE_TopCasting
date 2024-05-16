@@ -11,7 +11,7 @@ public class ReviewDetailResponseDto {
 
     private Long id;
     private String writer;
-    private String item;
+    private String product;
     private String image;
     private String title;
     private String content;
@@ -22,7 +22,7 @@ public class ReviewDetailResponseDto {
     public ReviewDetailResponseDto(Review review) {
         this.id = review.getId();
         this.writer = review.getWriter().getUsername();
-        this.item = review.getOrderItem().getItemName();
+        this.product = review.getOrderProduct().getProductName();
         this.image = Optional.ofNullable(review.getImage())
                              .map(ReviewImage::getPath)
                              .orElse(null);

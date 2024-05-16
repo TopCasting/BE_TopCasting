@@ -93,7 +93,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     private void checkOrderPrice(final Orders order, final Long price) {
-        if (!Objects.equals(order.getTotalItemPrice(), price)) {
+        if (!Objects.equals(order.getTotalProductPrice(), price)) {
             throw new BusinessException(ErrorMessage.INVALID_INPUT_VALUE);
         }
     }

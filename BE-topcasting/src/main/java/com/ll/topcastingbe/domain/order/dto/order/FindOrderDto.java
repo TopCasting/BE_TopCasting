@@ -1,7 +1,7 @@
 package com.ll.topcastingbe.domain.order.dto.order;
 
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderResponse;
-import com.ll.topcastingbe.domain.order.dto.order_item.FindOrderItemDto;
+import com.ll.topcastingbe.domain.order.dto.order_item.FindOrderProductDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -14,9 +14,9 @@ public record FindOrderDto(UUID orderId,
                            String customerAddress,
                            String orderStatus,
                            LocalDateTime orderCreatedDate,
-                           Long totalItemQuantity,
-                           Long totalItemPrice,
-                           List<FindOrderItemDto> findOrderItemDtos) {
+                           Long totalProductQuantity,
+                           Long totalProductPrice,
+                           List<FindOrderProductDto> findOrderProductDtos) {
 
     public static FindOrderDto of(final FindOrderResponse findOrderResponse) {
         final FindOrderDto findOrderDto = FindOrderDto.builder()
@@ -26,9 +26,9 @@ public record FindOrderDto(UUID orderId,
                 .customerAddress(findOrderResponse.customerAddress())
                 .orderStatus(findOrderResponse.orderStatus())
                 .orderCreatedDate(findOrderResponse.orderCreatedDate())
-                .totalItemQuantity(findOrderResponse.totalItemQuantity())
-                .totalItemPrice(findOrderResponse.totalItemPrice())
-                .findOrderItemDtos(FindOrderItemDto.ofList(findOrderResponse.findOrderItemResponses()))
+                .totalProductQuantity(findOrderResponse.totalProductQuantity())
+                .totalProductPrice(findOrderResponse.totalProductPrice())
+                .findOrderProductDtos(FindOrderProductDto.ofList(findOrderResponse.findOrderProductRespons()))
                 .build();
         return findOrderDto;
     }
