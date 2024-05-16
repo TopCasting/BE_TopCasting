@@ -36,8 +36,5 @@ public class OrderProduct {
     public String getProductName() {
         return this.option.getProduct().getProductName();
     }
-
-    public String getProductImagePath() {
-        return this.option.getProduct().getImage().getPath();
-    }
+    
 }

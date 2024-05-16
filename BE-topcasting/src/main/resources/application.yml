@@ -39,3 +39,20 @@ custom:
     front_url: http://localhost:3000
     back_url: http://localhost:8080
 
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: never

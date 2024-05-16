@@ -1,6 +1,7 @@
 package com.ll.topcastingbe.domain.cart.dto;
 
 import com.ll.topcastingbe.domain.cart.entity.CartOption;
+import com.ll.topcastingbe.domain.image.entity.MainImage;
 import java.math.BigDecimal;
 import lombok.Builder;
 import lombok.Data;
@@ -15,10 +16,10 @@ public class CartOptionResponseDto {
     private int productQuantity;
     private BigDecimal productPrice;
 
-    public static CartOptionResponseDto toDto(CartOption cartOption) {
+    public static CartOptionResponseDto toDto(CartOption cartOption, MainImage mainImage) {
         return CartOptionResponseDto.builder()
                 .cartOptionId(cartOption.getId())
-                .productImage(cartOption.getOption().getProduct().getImage().getPath())
+                .productImage(mainImage.getPath())
                 .productName(cartOption.getOption().getProduct().getProductName())
                 .productColor(cartOption.getOption().getColorName())
                 .productQuantity(cartOption.getProductQuantity())

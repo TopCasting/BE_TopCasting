@@ -2,6 +2,8 @@ package com.ll.topcastingbe.domain.order.service.order_product;
 
 import com.ll.topcastingbe.domain.cart.entity.CartOption;
 import com.ll.topcastingbe.domain.cart.repository.CartOptionRepository;
+import com.ll.topcastingbe.domain.image.entity.MainImage;
+import com.ll.topcastingbe.domain.image.service.ImageService;
 import com.ll.topcastingbe.domain.member.entity.Member;
 import com.ll.topcastingbe.domain.option.entity.Option;
 import com.ll.topcastingbe.domain.option.repository.OptionRepository;
@@ -15,6 +17,7 @@ import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
 import com.ll.topcastingbe.domain.order.repository.order.OrderRepository;
 import com.ll.topcastingbe.domain.order.repository.order_product.OrderProductRepository;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     private final OrderProductRepository orderProductRepository;
     private final OrderRepository orderRepository;
     private final CartOptionRepository cartOptionRepository;
+    private final ImageService imageService;
 
     @Override
     @Transactional
@@ -60,7 +64,10 @@ public class OrderProductServiceImpl implements OrderProductService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
 
         List<OrderProduct> orderProducts = orderProductRepository.findAllByOrder(order);
-        List<FindOrderProductResponse> orderProductResponses = FindOrderProductResponse.ofList(orderProducts);
+        Map<Long, MainImage> mainImageMap = imageService.createMainImageMapOfOrderProducts(orderProducts);
+
+        List<FindOrderProductResponse> orderProductResponses = FindOrderProductResponse.ofList(orderProducts,
+                mainImageMap);
 
         return orderProductResponses;
     }
@@ -71,7 +78,9 @@ public class OrderProductServiceImpl implements OrderProductService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
 
         List<OrderProduct> orderProducts = orderProductRepository.findAllByOrder(order);
-        List<FindOrderProductResponse> orderProductResponses = FindOrderProductResponse.ofList(orderProducts);
+        Map<Long, MainImage> mainImageMap = imageService.createMainImageMapOfOrderProducts(orderProducts);
+        List<FindOrderProductResponse> orderProductResponses = FindOrderProductResponse.ofList(orderProducts,
+                mainImageMap);
 
         return orderProductResponses;
     }
@@ -88,7 +97,8 @@ public class OrderProductServiceImpl implements OrderProductService {
 
     @Override
     @Transactional
-    public void updateOrderItem(Long orderProductId, ModifyOrderProductRequest modifyOrderProductRequest, Member member) {
+    public void updateOrderItem(Long orderProductId, ModifyOrderProductRequest modifyOrderProductRequest,
+                                Member member) {
 
     }
 
@@ -97,4 +107,6 @@ public class OrderProductServiceImpl implements OrderProductService {
     public void removeAllByOrder(final Orders order) {
         orderProductRepository.removeAllByOrder(order);
     }
+
+
 }

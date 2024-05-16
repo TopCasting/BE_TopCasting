@@ -3,16 +3,22 @@ package com.ll.topcastingbe.domain.image.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ll.topcastingbe.domain.cart.entity.CartOption;
 import com.ll.topcastingbe.domain.image.entity.DetailedImage;
 import com.ll.topcastingbe.domain.image.entity.Image;
 import com.ll.topcastingbe.domain.image.entity.MainImage;
 import com.ll.topcastingbe.domain.image.repository.ImageRepository;
+import com.ll.topcastingbe.domain.order.entity.OrderProduct;
+import com.ll.topcastingbe.domain.product.entity.Product;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +39,13 @@ public class ImageService {
     private String bucket;
 
     @Transactional
-    public Image uploadImage(String productName, String base64) {
+    public Image uploadImage(String itemName, String base64, Product product) {
 
-        ImageUploadDto imageUploadDto = createImageUploadDto(productName, base64);
+        ImageUploadDto imageUploadDto = createImageUploadDto(itemName, base64);
 
         MainImage mainImage = MainImage.builder()
                 .path(imageUploadDto.getImageUrl())
+                .product(product)
                 .imageName(imageUploadDto.getImageName())
                 .fullName(imageUploadDto.getFullName())
                 .createdDate(imageUploadDto.getCreatedDate())
@@ -48,12 +55,13 @@ public class ImageService {
     }
 
     @Transactional
-    public DetailedImage uploadDetailedImage(String productName, String base64) {
+    public DetailedImage uploadDetailedImage(String itemName, String base64, Product product) {
 
-        ImageUploadDto imageUploadDto = createImageUploadDto(productName, base64);
+        ImageUploadDto imageUploadDto = createImageUploadDto(itemName, base64);
 
         DetailedImage detailedImage = DetailedImage.builder()
                 .path(imageUploadDto.getImageUrl())
+                .product(product)
                 .imageName(imageUploadDto.getImageName())
                 .fullName(imageUploadDto.getFullName())
                 .createdDate(imageUploadDto.getCreatedDate())
@@ -62,7 +70,7 @@ public class ImageService {
         return imageRepository.save(detailedImage);
     }
 
-    private ImageUploadDto createImageUploadDto(String productName, String base64) {
+    private ImageUploadDto createImageUploadDto(String itemName, String base64) {
 
         byte[] decodedFile = Base64.getMimeDecoder().decode(base64.substring(base64.indexOf(",") + 1));
         String contentType = base64.substring(base64.indexOf(":"), base64.indexOf(";"));
@@ -74,7 +82,7 @@ public class ImageService {
         //S3에 '년/월/일/UUID_파일이름' 으로 저장
         LocalDate now = LocalDate.now();
         String datePath = now.format(DateTimeFormatter.ofPattern("yyyy/MM/dd/"));
-        String imageName = UUID.randomUUID() + "_" + productName;
+        String imageName = UUID.randomUUID() + "_" + itemName;
         String fullName = datePath + imageName;
 
         amazonS3.putObject(
@@ -92,11 +100,43 @@ public class ImageService {
         imageRepository.delete(image);
     }
 
+    public MainImage findMainImage(Product product) {
+        return imageRepository.findMainImageByProductId(product.getId());
+    }
+
+    public DetailedImage findDetailedImage(Product product) {
+        return imageRepository.findDetailedImageByProductId(product.getId());
+    }
+
+    public Map<Long, MainImage> createMainImageMapOfOrderProducts(List<OrderProduct> orderProducts) {
+        //주문옵션을 순회하면서 상품 번호 리스트를 반환.
+        List<Long> productNumbers = orderProducts.stream().map(op -> op.getOption().getProduct().getId())
+                .collect(Collectors.toList());
+
+        List<MainImage> mainImages = imageRepository.findAllMainImageByProductNumberIn(productNumbers);
+
+        //<상품번호, 메인이미지> Map 형태 생성
+        return mainImages.stream()
+                .collect(Collectors.toMap(mi -> mi.getProduct().getId(), mi -> mi));
+    }
+
+    public Map<Long, MainImage> createMainImageMapOfCartOption(List<CartOption> cartOptions) {
+        List<Long> productNumbers = cartOptions.stream().map(co -> co.getOption().getProduct().getId())
+                .collect(Collectors.toList());
+
+        List<MainImage> mainImages = imageRepository.findAllMainImageByProductNumberIn(productNumbers);
+        //<상품번호, 메인이미지> Map 형태 생성
+        Map<Long, MainImage> mainImageMap = mainImages.stream()
+                .collect(Collectors.toMap(mi -> mi.getProduct().getId(), mi -> mi));
+        return mainImageMap;
+    }
+
     @Getter
     private static class ImageUploadDto {
         private final String imageUrl;
         private final String imageName;
         private final String fullName;
+
         private final LocalDateTime createdDate;
 
         public ImageUploadDto(String imageUrl, String imageName, String fullName, LocalDateTime createdDate) {
@@ -105,5 +145,6 @@ public class ImageService {
             this.fullName = fullName;
             this.createdDate = createdDate;
         }
+
     }
 }

@@ -1,5 +1,6 @@
 package com.ll.topcastingbe.domain.product.search.service;
 
+import com.ll.topcastingbe.domain.image.repository.ImageRepository;
 import com.ll.topcastingbe.domain.product.entity.Product;
 import com.ll.topcastingbe.domain.product.repository.ProductRepository;
 import com.ll.topcastingbe.domain.product.search.dto.SearchProductDto;
@@ -9,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,7 +17,8 @@ import org.springframework.stereotype.Service;
 public class ProductSearchService {
 
     private final ProductRepository productRepository;
-    
+    private final ImageRepository imageRepository;
+
     public Page<SearchProductDto> productsSearch(String keyword, Pageable pageable) {
         List<Product> productList = productRepository.findListByProductNameIgnoreCase(keyword, pageable);
         return createPage(productList, pageable);
@@ -34,7 +35,7 @@ public class ProductSearchService {
     }
 
     public Page<SearchProductDto> getProductsBySubcategory(Pageable pageable,
-                                                            Long subCategoryId) {
+                                                           Long subCategoryId) {
         List<Product> productList = productRepository.findAllProductsBySubCategory(subCategoryId, pageable);
         return createPage(productList, pageable);
     }
@@ -64,7 +65,7 @@ public class ProductSearchService {
                     searchProductDto.setProductId(product.getId());
                     searchProductDto.setProductName(product.getProductName());
                     searchProductDto.setProductPrice(product.getProductPrice());
-                    searchProductDto.setImageUrl(product.getImage().getPath());
+                    searchProductDto.setImageUrl(imageRepository.findMainImageByProductId(product.getId()).getPath());
                     return searchProductDto;
                 })
                 .collect(Collectors.toList());

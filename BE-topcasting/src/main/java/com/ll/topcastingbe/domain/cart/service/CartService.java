@@ -6,6 +6,8 @@ import com.ll.topcastingbe.domain.cart.entity.CartOption;
 import com.ll.topcastingbe.domain.cart.exception.CartOptionNotExistException;
 import com.ll.topcastingbe.domain.cart.repository.CartOptionRepository;
 import com.ll.topcastingbe.domain.cart.repository.CartRepository;
+import com.ll.topcastingbe.domain.image.entity.MainImage;
+import com.ll.topcastingbe.domain.image.service.ImageService;
 import com.ll.topcastingbe.domain.member.entity.Member;
 import com.ll.topcastingbe.domain.member.exception.UserAndWriterNotMatchException;
 import com.ll.topcastingbe.domain.member.exception.UserNotFoundException;
@@ -14,6 +16,7 @@ import com.ll.topcastingbe.domain.option.entity.Option;
 import com.ll.topcastingbe.domain.option.exception.OptionNotFoundException;
 import com.ll.topcastingbe.domain.option.repository.OptionRepository;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartOptionRepository cartOptionRepository;
     private final OptionRepository optionRepository;
+    private final ImageService imageService;
 
     //상품페이지에서 장바구니에 추가를 선택한 경우
     @Transactional
@@ -77,8 +81,13 @@ public class CartService {
         //장바구니가 존재하는지 확인 -> 없으면 생성
         Cart cart = cartRepository.findCartByMemberId(memberId).orElseGet(() -> createCart(memberId));
         List<CartOption> cartOptions = cartOptionRepository.findByCartId(cart.getId());
-        return CartOptionListResponseDto.toDto(cartOptions);
+
+        //카트옵션을 순회하면서 상품 번호 리스트를 반환.
+        Map<Long, MainImage> mainImageMap = imageService.createMainImageMapOfCartOption(cartOptions);
+
+        return CartOptionListResponseDto.toDto(cartOptions, mainImageMap);
     }
+
 
     @Transactional
     public void removeCartOption(Long memberId, Long cartOptionId) {
