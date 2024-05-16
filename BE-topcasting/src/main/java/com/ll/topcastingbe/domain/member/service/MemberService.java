@@ -15,9 +15,7 @@ import com.ll.topcastingbe.domain.member.exception.PasswordNotMatchException;
 import com.ll.topcastingbe.domain.member.exception.UsernameExistsException;
 import com.ll.topcastingbe.domain.member.exception.UserNotFoundException;
 import com.ll.topcastingbe.domain.member.repository.MemberRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,13 +29,10 @@ public class MemberService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
-<<<<<<< Updated upstream
     private final CartOptionRepository cartOptionRepository;
-=======
-    private final CartItemRepository cartItemRepository;
     private final AddressService addressService;
     private final AddressRepository addressRepository;
->>>>>>> Stashed changes
+
 
     @Transactional
     public ResponseEntity<String> join(JoinRequestDto joinRequestDto) {
@@ -54,21 +49,6 @@ public class MemberService {
         }
         
         Member member = Member.builder()
-<<<<<<< Updated upstream
-                .username(joinRequestDto.getUsername())
-                .password(passwordEncoder.encode(joinRequestDto.getPassword()))
-                .nickname(joinRequestDto.getNickname())
-                .name(joinRequestDto.getName())
-                .email(joinRequestDto.getEmail())
-                .birthDate(joinRequestDto.getBirthDate())
-                .phoneNumber(joinRequestDto.getPhoneNumber())
-                .address(Address.builder()
-                        .address1(joinRequestDto.getAddress1())
-                        .address2(joinRequestDto.getAddress2())
-                        .zipcode(joinRequestDto.getZipcode())
-                        .build())
-                .build();
-=======
                                 .username(joinRequestDto.getUsername())
                                 .password(passwordEncoder.encode(joinRequestDto.getPassword()))
                                 .nickname(joinRequestDto.getNickname())
@@ -77,7 +57,6 @@ public class MemberService {
                                 .birthDate(joinRequestDto.getBirthDate())
                                 .phoneNumber(joinRequestDto.getPhoneNumber())
                                 .build();
->>>>>>> Stashed changes
         member.grantRole();
         memberRepository.save(member);
 
@@ -113,17 +92,7 @@ public class MemberService {
     public void modifyMember(Long memberId, String nickname, String password, String email, String phoneNumber) {
         //패스워드가 실제 member 패스워드와 일치하는지 확인
         Member findMember = validateAndFindMember(memberId, password);
-<<<<<<< Updated upstream
-
-        Address address = Address.builder()
-                .address1(address1)
-                .address2(address2)
-                .zipcode(zipcode).build();
-
-        findMember.changeDetails(nickname, email, address, phoneNumber);
-=======
         findMember.changeDetails(nickname, email, phoneNumber);
->>>>>>> Stashed changes
     }
 
     private Member validateAndFindMember(Long memberId, String password) {
@@ -161,19 +130,11 @@ public class MemberService {
             return;
         }
         Address address = Address.builder()
-<<<<<<< Updated upstream
-                .address1(requestDto.getAddress1())
-                .address2(requestDto.getAddress2())
-                .zipcode(requestDto.getZipcode())
-                .build();
-        findMember.changeDetailsForSicailLogin(requestDto.getNickname(), address, requestDto.getPhoneNumber(),
-=======
                                   .primaryAddress(requestDto.getAddress1())
                                   .secondaryAddress(requestDto.getAddress2())
                                   .zipcode(requestDto.getZipcode())
                                   .build();
         findMember.changeDetailsForSicailLogin(requestDto.getNickname(),requestDto.getPhoneNumber(),
->>>>>>> Stashed changes
                 requestDto.getBirthDate());
         addressRepository.save(address);
         findMember.grantRole();
