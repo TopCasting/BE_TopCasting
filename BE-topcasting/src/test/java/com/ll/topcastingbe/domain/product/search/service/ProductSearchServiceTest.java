@@ -15,7 +15,7 @@ class ProductSearchServiceTest {
     private ProductSearchService productSearchService;
 
     @Test
-    public void getItemByMainCategoryTest() {
+    public void getProductByMainCategoryTest() {
 
         Long mainCategoryId = 2L; // 메인 카테고리 ID 설정
         Pageable pageable = PageRequest.of(0, 10); // 페이지 및 크기 설정
@@ -25,7 +25,7 @@ class ProductSearchServiceTest {
     }
 
     @Test
-    public void getItemBySubCategory() {
+    public void getProductBySubCategory() {
         Long subCategoryId = 1L;
         Pageable pageable = PageRequest.of(0, 10);
 

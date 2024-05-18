@@ -31,7 +31,7 @@ public interface OrderService {
 
     List<FindOrderResponse> addOrderResponse(final List<Orders> orders);
 
-    Long getTotalItemPrice(final Orders order);
+    Long getTotalProductPrice(final Orders order);
 
     CompletableFuture<String> deductStockForOrder(final Orders order);
 }

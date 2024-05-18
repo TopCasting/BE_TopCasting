@@ -46,24 +46,24 @@ public class ReviewController {
     }
 
     //해당 ItemId에 해당하는 reviewList 조회
-    @GetMapping("/items/{itemId}/review")
-    public ResponseEntity<ReviewListResponseDto> itemReviewList(@PathVariable Long itemId,
-                                                                @RequestParam(defaultValue = "DESC") String sort) {
+    @GetMapping("/products/{productId}/review")
+    public ResponseEntity<ReviewListResponseDto> productReviewList(@PathVariable Long productId,
+                                                                   @RequestParam(defaultValue = "DESC") String sort) {
 
-        return ResponseEntity.ok().body(reviewService.findItemReviewList(itemId, sort));
+        return ResponseEntity.ok().body(reviewService.findProductReviewList(productId, sort));
     }
 
 
     //리뷰 작성
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("orders/{orderId}/items/{itemName}/review")
-    public ResponseEntity<ReviewDetailResponseDto> reviewAdd(@PathVariable String itemName,
+    @PostMapping("orders/{orderId}/products/{productName}/review")
+    public ResponseEntity<ReviewDetailResponseDto> reviewAdd(@PathVariable String productName,
                                                              @PathVariable UUID orderId,
                                                              @AuthenticationPrincipal PrincipalDetails principalDetails,
                                                              @RequestBody AddNormalReviewRequestDto addNormalReviewRequestDto) {
         Member member = principalDetails.getMember();
         return ResponseEntity.ok()
-                       .body(reviewService.addNormalReview(itemName, member, orderId,
+                       .body(reviewService.addNormalReview(productName, member, orderId,
                                addNormalReviewRequestDto));
     }
 
@@ -90,10 +90,10 @@ public class ReviewController {
     }
 
     //    특정 평점별 리뷰
-    @GetMapping("items/{itemId}/review/rating/{rating}")
-    public ResponseEntity<ReviewListResponseDto> ItemReviewRatingList(@PathVariable int rating,
-                                                                      @PathVariable Long itemId) {
-        return ResponseEntity.ok().body(reviewService.findReviewRating(rating, itemId));
+    @GetMapping("products/{productId}/review/rating/{rating}")
+    public ResponseEntity<ReviewListResponseDto> ProductReviewRatingList(@PathVariable int rating,
+                                                                         @PathVariable Long productId) {
+        return ResponseEntity.ok().body(reviewService.findReviewRating(rating, productId));
     }
 
     //    member가 작성한 리뷰
@@ -107,17 +107,17 @@ public class ReviewController {
     }
 
     //    제미나이
-    @GetMapping("/items/{itemId}/review/summary")
-    public ResponseEntity ItemReviewSummary(@PathVariable Long itemId) {
+    @GetMapping("/products/{productId}/review/summary")
+    public ResponseEntity ProductReviewSummary(@PathVariable Long productId) {
         //TODO 추후 제미나이 요약 기능 추가 예정
         reviewService.makeReviewSummary();
         return null;
     }
 
-    @GetMapping("/orders/{orderId}/items/{itemName}/review")
-    public ResponseEntity reviewVerify(@PathVariable String itemName, @PathVariable String orderId) {
+    @GetMapping("/orders/{orderId}/products/{productName}/review")
+    public ResponseEntity reviewVerify(@PathVariable String productName, @PathVariable String orderId) {
         UUID uuidOrderId = UUID.fromString(orderId);
-        reviewService.verifyReview(itemName, uuidOrderId);
+        reviewService.verifyReview(productName, uuidOrderId);
         return ResponseEntity.ok().body("리뷰 검증 완료");
     }
 

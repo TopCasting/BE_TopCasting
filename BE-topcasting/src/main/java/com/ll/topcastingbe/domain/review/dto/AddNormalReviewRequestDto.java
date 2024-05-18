@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class AddNormalReviewRequestDto {
     private String writer;
-    private Long itemId;
+    private Long productId;
     private String title;
     private String content;
     private int rating;

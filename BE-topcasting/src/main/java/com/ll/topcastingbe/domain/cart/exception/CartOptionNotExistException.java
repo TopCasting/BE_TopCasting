@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class CartOptionNotExistException extends RuntimeException {
 
     public CartOptionNotExistException() {
-        super(CartErrorMessage.CART_ITEM_NOT_EXIST.getMessage());
+        super(CartErrorMessage.CART_PRODUCT_NOT_EXIST.getMessage());
     }
 
     public CartOptionNotExistException(String message) {

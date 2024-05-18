@@ -46,9 +46,9 @@ public class Orders extends BaseEntity {
 
     private String customerAddress;
 
-    private Long totalItemQuantity;
+    private Long totalProductQuantity;
 
-    private Long totalItemPrice;
+    private Long totalProductPrice;
 
     public void checkAuthorizedMember(final Member member) {
         if (!Objects.equals(this.member.getId(), member.getId())) {

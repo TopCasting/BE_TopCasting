@@ -9,15 +9,15 @@ import com.ll.topcastingbe.domain.order.dto.order.request.ModifyOrderRequest;
 import com.ll.topcastingbe.domain.order.dto.order.request.RequestCancelOrderRequest;
 import com.ll.topcastingbe.domain.order.dto.order.response.AddOrderResponse;
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderResponse;
-import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderItemResponse;
-import com.ll.topcastingbe.domain.order.entity.OrderItem;
+import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponse;
+import com.ll.topcastingbe.domain.order.entity.OrderProduct;
 import com.ll.topcastingbe.domain.order.entity.OrderStatus;
 import com.ll.topcastingbe.domain.order.entity.Orders;
 import com.ll.topcastingbe.domain.order.exception.BusinessException;
 import com.ll.topcastingbe.domain.order.exception.EntityNotFoundException;
 import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
 import com.ll.topcastingbe.domain.order.repository.order.OrderRepository;
-import com.ll.topcastingbe.domain.order.service.order_item.OrderItemService;
+import com.ll.topcastingbe.domain.order.service.order_product.OrderProductService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 @EnableAsync
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
-    private final OrderItemService orderItemService;
+    private final OrderProductService orderProductService;
 
     @Override
     @Transactional
@@ -46,7 +46,7 @@ public class OrderServiceImpl implements OrderService {
         final Orders order = addOrderRequest.toOrder(member);
         orderRepository.save(order);
 
-        addOrderItem(order, addOrderRequest);
+        addOrderProduct(order, addOrderRequest);
         final AddOrderResponse addOrderResponse = AddOrderResponse.of(order);
         return addOrderResponse;
     }
@@ -57,8 +57,8 @@ public class OrderServiceImpl implements OrderService {
         final Orders order = findByOrderId(orderId);
         order.checkAuthorizedMember(member);
 
-        List<FindOrderItemResponse> findOrderItemResponses = orderItemService.findAllByOrderId(orderId, member);
-        final FindOrderResponse findOrderResponse = FindOrderResponse.of(order, findOrderItemResponses);
+        List<FindOrderProductResponse> findOrderProductRespons = orderProductService.findAllByOrderId(orderId, member);
+        final FindOrderResponse findOrderResponse = FindOrderResponse.of(order, findOrderProductRespons);
 
         return findOrderResponse;
     }
@@ -87,7 +87,7 @@ public class OrderServiceImpl implements OrderService {
     public void removeOrder(final UUID orderId, final Member member) {
         final Orders order = findByOrderId(orderId);
         order.checkAuthorizedMember(member);
-        orderItemService.removeAllByOrder(order);
+        orderProductService.removeAllByOrder(order);
         orderRepository.delete(order);
     }
 
@@ -122,20 +122,20 @@ public class OrderServiceImpl implements OrderService {
         List<FindOrderResponse> findOrderResponses = new ArrayList<>();
 
         for (Orders order : orders) {
-            final List<FindOrderItemResponse> findOrderItemResponses =
-                    orderItemService.findAllByOrderIdForAdmin(order.getId());
-            final FindOrderResponse findOrderResponse = FindOrderResponse.of(order, findOrderItemResponses);
+            final List<FindOrderProductResponse> findOrderProductRespons =
+                    orderProductService.findAllByOrderIdForAdmin(order.getId());
+            final FindOrderResponse findOrderResponse = FindOrderResponse.of(order, findOrderProductRespons);
             findOrderResponses.add(findOrderResponse);
         }
         return findOrderResponses;
     }
 
-    public Long getTotalItemPrice(final Orders order) {
-        final List<OrderItem> orderItems = orderItemService.findOrderItems(order);
-        Long totalItemPrice = orderItems.stream()
-                .mapToLong(OrderItem::getTotalPrice)
+    public Long getTotalProductPrice(final Orders order) {
+        final List<OrderProduct> orderProducts = orderProductService.findOrderProducts(order);
+        Long totalProductPrice = orderProducts.stream()
+                .mapToLong(OrderProduct::getTotalPrice)
                 .sum();
-        return totalItemPrice;
+        return totalProductPrice;
     }
 
     @Transactional
@@ -143,29 +143,29 @@ public class OrderServiceImpl implements OrderService {
     @Retryable
     public CompletableFuture<String> deductStockForOrder(final Orders order) {
 
-        List<OrderItem> orderItems = orderItemService.findOrderItemsWithPessimisticWriteLock(order);
-        for (OrderItem orderItem : orderItems) {
-            long newStock = orderItem.getOption().getStock() - orderItem.getItemQuantity();
+        List<OrderProduct> orderProducts = orderProductService.findOrderProductsWithPessimisticWriteLock(order);
+        for (OrderProduct orderProduct : orderProducts) {
+            long newStock = orderProduct.getOption().getStock() - orderProduct.getProductQuantity();
             if (newStock < 0) {
                 log.info("{}", "error");
                 throw new BusinessException(ErrorMessage.INVALID_INPUT_VALUE);
             }
-            orderItem.getOption().deductionStock(orderItem.getItemQuantity());
+            orderProduct.getOption().deductionStock(orderProduct.getProductQuantity());
         }
         return CompletableFuture.completedFuture(null);
     }
 
-    private void checkTotalItemPrice(final Orders order) {
-        Long totalItemPrice = getTotalItemPrice(order);
-        if (!Objects.equals(totalItemPrice, order.getTotalItemPrice())) {
+    private void checkTotalProductPrice(final Orders order) {
+        Long totalProductPrice = getTotalProductPrice(order);
+        if (!Objects.equals(totalProductPrice, order.getTotalProductPrice())) {
             throw new BusinessException(ErrorMessage.INVALID_INPUT_VALUE);
         }
     }
 
-    private void addOrderItem(final Orders order, final AddOrderRequest addOrderRequest) {
-        addOrderRequest.addOrderItemRequest()
-                .forEach(addOrderItemRequest -> {
-                    orderItemService.addOrderItem(order, addOrderItemRequest);
+    private void addOrderProduct(final Orders order, final AddOrderRequest addOrderRequest) {
+        addOrderRequest.addOrderProductRequest()
+                .forEach(addOrderProductRequest -> {
+                    orderProductService.addOrderProduct(order, addOrderProductRequest);
                 });
     }
 }

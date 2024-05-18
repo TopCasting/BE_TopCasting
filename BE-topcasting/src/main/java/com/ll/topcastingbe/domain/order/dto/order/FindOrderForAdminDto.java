@@ -1,7 +1,7 @@
 package com.ll.topcastingbe.domain.order.dto.order;
 
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderForAdminResponse;
-import com.ll.topcastingbe.domain.order.dto.order_item.FindOrderItemDto;
+import com.ll.topcastingbe.domain.order.dto.order_item.FindOrderProductDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -15,9 +15,9 @@ public record FindOrderForAdminDto(UUID orderId,
                                    String customerAddress,
                                    String orderStatus,
                                    LocalDateTime orderCreatedDate,
-                                   Long totalItemQuantity,
-                                   Long totalItemPrice,
-                                   List<FindOrderItemDto> findOrderItemDtos) {
+                                   Long totalProductQuantity,
+                                   Long totalProductPrice,
+                                   List<FindOrderProductDto> findOrderProductDtos) {
 
     public static FindOrderForAdminDto of(final FindOrderForAdminResponse findOrderForAdminResponse) {
         final FindOrderForAdminDto findOrderDto = FindOrderForAdminDto.builder()
@@ -28,9 +28,9 @@ public record FindOrderForAdminDto(UUID orderId,
                 .customerAddress(findOrderForAdminResponse.customerAddress())
                 .orderStatus(findOrderForAdminResponse.orderStatus())
                 .orderCreatedDate(findOrderForAdminResponse.orderCreatedDate())
-                .totalItemQuantity(findOrderForAdminResponse.totalItemQuantity())
-                .totalItemPrice(findOrderForAdminResponse.totalItemPrice())
-                .findOrderItemDtos(FindOrderItemDto.ofList(findOrderForAdminResponse.findOrderItemResponses()))
+                .totalProductQuantity(findOrderForAdminResponse.totalProductQuantity())
+                .totalProductPrice(findOrderForAdminResponse.totalProductPrice())
+                .findOrderProductDtos(FindOrderProductDto.ofList(findOrderForAdminResponse.findOrderProductRespons()))
                 .build();
         return findOrderDto;
     }
