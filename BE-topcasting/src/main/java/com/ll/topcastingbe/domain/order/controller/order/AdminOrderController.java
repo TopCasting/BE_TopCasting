@@ -1,7 +1,5 @@
 package com.ll.topcastingbe.domain.order.controller.order;
 
-import com.ll.topcastingbe.domain.order.dto.order.FindOrderDto;
-import com.ll.topcastingbe.domain.order.dto.order.FindOrderForAdminDto;
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderForAdminResponse;
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderResponse;
 import com.ll.topcastingbe.domain.order.service.order.AdminOrderService;
@@ -23,24 +21,22 @@ public class AdminOrderController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/orders/refund")
-    public ResponseEntity<List<FindOrderDto>> cancelOrderRequestsFindAllForAdmin() {
-        final List<FindOrderResponse> findOrderResponses = adminOrderService.findAllCancelOrderRequestsForAdmin();
-        final List<FindOrderDto> findOrderDtos = FindOrderDto.ofList(findOrderResponses);
-        return ResponseEntity.ok().body(findOrderDtos);
+    public ResponseEntity<List<FindOrderResponse>> cancelOrderRequestsFindAllForAdmin() {
+        List<FindOrderResponse> findOrderResponses = adminOrderService.findAllCancelOrderRequestsForAdmin();
+        return ResponseEntity.ok().body(findOrderResponses);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/orders")
-    public ResponseEntity<List<FindOrderDto>> orderFindAllForAdmin() {
-        final List<FindOrderDto> findOrderDtos = FindOrderDto.ofList(adminOrderService.findOrderListForAdmin());
+    public ResponseEntity<List<FindOrderResponse>> orderFindAllForAdmin() {
+        final List<FindOrderResponse> findOrderDtos = adminOrderService.findOrderListForAdmin();
         return ResponseEntity.ok(findOrderDtos);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/orders/{orderId}")
-    public ResponseEntity<FindOrderForAdminDto> orderFindForAdmin(@PathVariable("orderId") final UUID orderId) {
-        final FindOrderForAdminResponse findOrderForAdminResponse = adminOrderService.findOrderForAdmin(orderId);
-        final FindOrderForAdminDto findOrderForAdminDto = FindOrderForAdminDto.of(findOrderForAdminResponse);
-        return ResponseEntity.ok(findOrderForAdminDto);
+    public ResponseEntity<FindOrderForAdminResponse> orderFindForAdmin(@PathVariable("orderId") final UUID orderId) {
+        FindOrderForAdminResponse findOrderForAdminResponse = adminOrderService.findOrderForAdmin(orderId);
+        return ResponseEntity.ok(findOrderForAdminResponse);
     }
 }

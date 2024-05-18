@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class OptionCreateRequestDto {
     @NotNull
-    private Long itemId;
+    private Long productId;
     @NotBlank
     private String colorName;
     @PositiveOrZero

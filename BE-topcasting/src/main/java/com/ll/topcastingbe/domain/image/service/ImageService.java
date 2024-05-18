@@ -3,22 +3,17 @@ package com.ll.topcastingbe.domain.image.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.ll.topcastingbe.domain.cart.entity.CartOption;
 import com.ll.topcastingbe.domain.image.entity.DetailedImage;
 import com.ll.topcastingbe.domain.image.entity.Image;
 import com.ll.topcastingbe.domain.image.entity.MainImage;
 import com.ll.topcastingbe.domain.image.repository.ImageRepository;
-import com.ll.topcastingbe.domain.order.entity.OrderProduct;
 import com.ll.topcastingbe.domain.product.entity.Product;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
-import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -106,29 +101,6 @@ public class ImageService {
 
     public DetailedImage findDetailedImage(Product product) {
         return imageRepository.findDetailedImageByProductId(product.getId());
-    }
-
-    public Map<Long, MainImage> createMainImageMapOfOrderProducts(List<OrderProduct> orderProducts) {
-        //주문옵션을 순회하면서 상품 번호 리스트를 반환.
-        List<Long> productNumbers = orderProducts.stream().map(op -> op.getOption().getProduct().getId())
-                .collect(Collectors.toList());
-
-        List<MainImage> mainImages = imageRepository.findAllMainImageByProductNumberIn(productNumbers);
-
-        //<상품번호, 메인이미지> Map 형태 생성
-        return mainImages.stream()
-                .collect(Collectors.toMap(mi -> mi.getProduct().getId(), mi -> mi));
-    }
-
-    public Map<Long, MainImage> createMainImageMapOfCartOption(List<CartOption> cartOptions) {
-        List<Long> productNumbers = cartOptions.stream().map(co -> co.getOption().getProduct().getId())
-                .collect(Collectors.toList());
-
-        List<MainImage> mainImages = imageRepository.findAllMainImageByProductNumberIn(productNumbers);
-        //<상품번호, 메인이미지> Map 형태 생성
-        Map<Long, MainImage> mainImageMap = mainImages.stream()
-                .collect(Collectors.toMap(mi -> mi.getProduct().getId(), mi -> mi));
-        return mainImageMap;
     }
 
     @Getter
