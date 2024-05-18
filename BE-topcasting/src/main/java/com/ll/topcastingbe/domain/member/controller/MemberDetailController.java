@@ -1,5 +1,7 @@
 package com.ll.topcastingbe.domain.member.controller;
 
+import com.ll.topcastingbe.domain.address.entity.Address;
+import com.ll.topcastingbe.domain.address.service.AddressService;
 import com.ll.topcastingbe.domain.member.dto.MemberDetailsResponseDto;
 import com.ll.topcastingbe.domain.member.dto.MemberModifyRequestDto;
 import com.ll.topcastingbe.domain.member.exception.PasswordAndPasswordCheckNotMatchException;
@@ -27,12 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberDetailController {
 
     private final MemberService memberService;
+    private final AddressService addressService;
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{memberId}")
     public ResponseEntity<?> memberDetails(@AuthenticationPrincipal PrincipalDetails principal,
                                            @PathVariable Long memberId) {
-        return ResponseEntity.ok(MemberDetailsResponseDto.toDto(principal.getMember()));
+        Address findAddress = addressService.findAddress(principal.getMember());
+        return ResponseEntity.ok(MemberDetailsResponseDto.toDto(principal.getMember(), findAddress));
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -51,12 +55,9 @@ public class MemberDetailController {
                 memberModifyDto.getNickname(),
                 memberModifyDto.getPassword(),
                 memberModifyDto.getEmail(),
-                memberModifyDto.getAddress1(),
-                memberModifyDto.getAddress2(),
-                memberModifyDto.getZipcode(),
-                memberModifyDto.getPhoneNumber());
-
-        return ResponseEntity.ok(null);
+                memberModifyDto.getPhoneNumber()
+        );
+        return ResponseEntity.ok("Member 수정이 완료 되었습니다.");
     }
 
     @PreAuthorize("isAuthenticated()")

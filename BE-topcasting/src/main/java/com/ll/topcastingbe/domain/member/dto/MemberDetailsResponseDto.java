@@ -1,5 +1,6 @@
 package com.ll.topcastingbe.domain.member.dto;
 
+import com.ll.topcastingbe.domain.address.entity.Address;
 import com.ll.topcastingbe.domain.member.entity.Member;
 import java.time.LocalDate;
 import lombok.Builder;
@@ -14,11 +15,11 @@ public class MemberDetailsResponseDto {
     private String email;
     private LocalDate birthDate;
     private String phoneNumber;
-    private String address1;
-    private String address2;
+    private String primaryAddress;
+    private String secondaryAddress;
     private String zipcode;
 
-    public static MemberDetailsResponseDto toDto(Member member) {
+    public static MemberDetailsResponseDto toDto(Member member, Address address) {
         return MemberDetailsResponseDto.builder()
                 .username(member.getUsername())
                 .nickname(member.getNickname())
@@ -26,9 +27,9 @@ public class MemberDetailsResponseDto {
                 .email(member.getEmail())
                 .birthDate(member.getBirthDate())
                 .phoneNumber(member.getPhoneNumber())
-                .address1(member.getAddress().getAddress1())
-                .address2(member.getAddress().getAddress2())
-                .zipcode(member.getAddress().getZipcode())
+                .primaryAddress(address.getPrimaryAddress())
+                .secondaryAddress(address.getSecondaryAddress())
+                .zipcode(address.getZipcode())
                 .build();
     }
 }

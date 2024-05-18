@@ -1,7 +1,8 @@
 package com.ll.topcastingbe.domain.member.entity;
 
+import com.ll.topcastingbe.domain.address.entity.Address;
+import com.ll.topcastingbe.global.entity.BaseEntity;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,13 +15,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @Builder
 @Getter
-public class Member {
+public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,9 +31,6 @@ public class Member {
     @Column(nullable = false, unique = true)
     private String username;
 
-    private String password;
-
-    private String name;
 
     @Column(nullable = false, unique = true)
     private String nickname;
@@ -38,12 +38,16 @@ public class Member {
     @Column(nullable = false, unique = true)
     private String email;
 
-    private LocalDate birthDate;
+    @Column(nullable = false)
+    private String password;
 
-    @Embedded
-    private Address address;
+    @Column(nullable = false)
+    private String name;
 
+    @Column(nullable = false)
     private String phoneNumber;
+
+    private LocalDate birthDate;
 
     private String roles;
 
@@ -62,16 +66,14 @@ public class Member {
         }
     }
 
-    public void changeDetails(String nickname, String email, Address address, String phoneNumber) {
+    public void changeDetails(String nickname, String email,String phoneNumber) {
         this.nickname = nickname;
         this.email = email;
-        this.address = address;
         this.phoneNumber = phoneNumber;
     }
 
-    public void changeDetailsForSicailLogin(String nickname, Address address, String phoneNumber, LocalDate birthDate) {
+    public void changeDetailsForSicailLogin(String nickname,String phoneNumber, LocalDate birthDate) {
         this.nickname = nickname;
-        this.address = address;
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
     }

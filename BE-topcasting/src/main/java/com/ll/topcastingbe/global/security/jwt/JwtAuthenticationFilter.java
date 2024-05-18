@@ -87,7 +87,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                                       .sign(Algorithm.HMAC512(jwtProps.refreshKey));
 
         Cookie refreshCookie = new Cookie("RefreshToken", refreshToken);
-//        refreshCookie.setHttpOnly(true);
+        //refreshCookie.setHttpOnly(true);
 
         Cookie accessCookie = new Cookie("AccessToken", accessToken);
         response.addCookie(refreshCookie);
