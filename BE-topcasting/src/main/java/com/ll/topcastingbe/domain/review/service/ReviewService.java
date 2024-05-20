@@ -4,7 +4,7 @@ package com.ll.topcastingbe.domain.review.service;
 import com.ll.topcastingbe.domain.member.entity.Member;
 import com.ll.topcastingbe.domain.member.exception.UserNotFoundException;
 import com.ll.topcastingbe.domain.member.repository.MemberRepository;
-import com.ll.topcastingbe.domain.order.entity.OrderProduct;
+import com.ll.topcastingbe.domain.order.entity.OrderOption;
 import com.ll.topcastingbe.domain.order.entity.Orders;
 import com.ll.topcastingbe.domain.order.exception.EntityNotFoundException;
 import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
@@ -61,22 +61,22 @@ public class ReviewService {
                                                    AddNormalReviewRequestDto addNormalReviewRequestDto) {
 
         Orders orders = orderRepository.findById(orderId)
-                                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
-        List<OrderProduct> findOrderProducts = orderProductRepository.findByOrder(orders);
-        OrderProduct findOrderProduct = findOrderProducts.stream()
-                                          .filter(orderProduct -> orderProduct.getProductName().equals(productName))
-                                          .findFirst()
-                                          .orElseThrow(
-                                                  () -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
-        
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+        List<OrderOption> findOrderOptions = orderProductRepository.findByOrder(orders);
+        OrderOption findOrderOption = findOrderOptions.stream()
+                .filter(orderProduct -> orderProduct.getProductName().equals(productName))
+                .findFirst()
+                .orElseThrow(
+                        () -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+
         Review review = Review.builder()
-                                .writer(member)
-                                .orderProduct(findOrderProduct)
-                                .image(null)
-                                .title(addNormalReviewRequestDto.getTitle())
-                                .content(addNormalReviewRequestDto.getContent())
-                                .rating(addNormalReviewRequestDto.getRating())
-                                .build();
+                .writer(member)
+                .orderOption(findOrderOption)
+                .image(null)
+                .title(addNormalReviewRequestDto.getTitle())
+                .content(addNormalReviewRequestDto.getContent())
+                .rating(addNormalReviewRequestDto.getRating())
+                .build();
 
         return new ReviewDetailResponseDto((Review) reviewRepository.save(review));
     }
@@ -84,7 +84,7 @@ public class ReviewService {
     @Transactional
     public ReviewDetailResponseDto modifyReview(Long reviewId, ModifyReviewRequestDto modifyReviewRequestDto) {
         Review findReview = reviewRepository.findById(reviewId)
-                                    .orElseThrow(() -> new ReviewNotFoundException());
+                .orElseThrow(() -> new ReviewNotFoundException());
 
         if (modifyReviewRequestDto.getImgUrl() != null) {
             //TODO 이미지 url 존재할시
@@ -100,7 +100,7 @@ public class ReviewService {
     @Transactional
     public void deleteReview(Long reviewId) {
         Review findReview = reviewRepository.findById(reviewId)
-                                    .orElseThrow(() -> new ReviewNotFoundException());
+                .orElseThrow(() -> new ReviewNotFoundException());
         reviewRepository.delete(findReview);
     }
 
@@ -121,7 +121,7 @@ public class ReviewService {
 
     public ReviewListResponseDto findMemberReviewList(Long memberId) {
         Member findMember = memberRepository.findById(memberId)
-                                    .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(() -> new UserNotFoundException());
         return new ReviewListResponseDto(reviewRepository.findByWriter(findMember));
     }
 
@@ -132,16 +132,16 @@ public class ReviewService {
     public void verifyReview(String productName, UUID orderId) {
 
         Orders findOrders = orderRepository.findById(orderId)
-                                    .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
 
-        List<OrderProduct> findOrderProducts = orderProductRepository.findByOrder(findOrders);
-        OrderProduct findOrderProduct = findOrderProducts.stream()
-                                          .filter(orderProduct -> orderProduct.getProductName().equals(productName))
-                                          .findFirst()
-                                          .orElseThrow(
-                                                  () -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+        List<OrderOption> findOrderOptions = orderProductRepository.findByOrder(findOrders);
+        OrderOption findOrderOption = findOrderOptions.stream()
+                .filter(orderProduct -> orderProduct.getProductName().equals(productName))
+                .findFirst()
+                .orElseThrow(
+                        () -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
 
-        Long reviewCount = reviewRepository.countReviewsByOrderProduct(findOrderProduct);
+        Long reviewCount = reviewRepository.countReviewsByOrderProduct(findOrderOption);
 
         if (reviewCount >= 1) {
             throw new DuplicateReviewException();

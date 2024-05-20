@@ -14,19 +14,19 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     //list -> dto -> slice
     @Query("SELECT p FROM Product p " +
-                   "WHERE LOWER(p.productName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+            "WHERE LOWER(p.productName) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Product> findListByProductNameIgnoreCase(String keyword, Pageable pageable);
 
-    @Query("SELECT p FROM Product p JOIN FETCH p.image i")
+    @Query("SELECT p FROM Product p")
     List<Product> findAllProducts(Pageable pageable);
 
-    @Query("select p from Product p join fetch p.image i join fetch p.detailedImage di where p.id = :productId")
+    @Query("select p from Product p where p.id = :productId")
     Optional<Product> findByProductIdWithImageAndOption(@Param("productId") Long productId);
 
-    @Query("SELECT p FROM Product p JOIN FETCH p.image i WHERE p.mainCategory.id = :mainCategoryId")
+    @Query("SELECT p FROM Product p WHERE p.mainCategory.id = :mainCategoryId")
     List<Product> findAllProductsByMainCategory(@Param("mainCategoryId") Long mainCategoryId, Pageable pageable);
 
-    @Query("SELECT p FROM Product p JOIN FETCH p.image i WHERE p.subCategory.id = :subCategoryId")
+    @Query("SELECT p FROM Product p WHERE p.subCategory.id = :subCategoryId")
     List<Product> findAllProductsBySubCategory(@Param("subCategoryId") Long subCategoryId,
                                                Pageable pageable);
 

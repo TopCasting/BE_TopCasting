@@ -9,8 +9,8 @@ import com.ll.topcastingbe.domain.order.dto.order.request.ModifyOrderRequest;
 import com.ll.topcastingbe.domain.order.dto.order.request.RequestCancelOrderRequest;
 import com.ll.topcastingbe.domain.order.dto.order.response.AddOrderResponse;
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderResponse;
-import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponse;
-import com.ll.topcastingbe.domain.order.entity.OrderProduct;
+import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponseDto;
+import com.ll.topcastingbe.domain.order.entity.OrderOption;
 import com.ll.topcastingbe.domain.order.entity.OrderStatus;
 import com.ll.topcastingbe.domain.order.entity.Orders;
 import com.ll.topcastingbe.domain.order.exception.BusinessException;
@@ -57,7 +57,8 @@ public class OrderServiceImpl implements OrderService {
         final Orders order = findByOrderId(orderId);
         order.checkAuthorizedMember(member);
 
-        List<FindOrderProductResponse> findOrderProductRespons = orderProductService.findAllByOrderId(orderId, member);
+        List<FindOrderProductResponseDto> findOrderProductRespons = orderProductService.findAllByOrderId(orderId,
+                member);
         final FindOrderResponse findOrderResponse = FindOrderResponse.of(order, findOrderProductRespons);
 
         return findOrderResponse;
@@ -122,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
         List<FindOrderResponse> findOrderResponses = new ArrayList<>();
 
         for (Orders order : orders) {
-            final List<FindOrderProductResponse> findOrderProductRespons =
+            final List<FindOrderProductResponseDto> findOrderProductRespons =
                     orderProductService.findAllByOrderIdForAdmin(order.getId());
             final FindOrderResponse findOrderResponse = FindOrderResponse.of(order, findOrderProductRespons);
             findOrderResponses.add(findOrderResponse);
@@ -131,9 +132,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public Long getTotalProductPrice(final Orders order) {
-        final List<OrderProduct> orderProducts = orderProductService.findOrderProducts(order);
-        Long totalProductPrice = orderProducts.stream()
-                .mapToLong(OrderProduct::getTotalPrice)
+        final List<OrderOption> orderOptions = orderProductService.findOrderProducts(order);
+        Long totalProductPrice = orderOptions.stream()
+                .mapToLong(OrderOption::getTotalPrice)
                 .sum();
         return totalProductPrice;
     }
@@ -143,14 +144,14 @@ public class OrderServiceImpl implements OrderService {
     @Retryable
     public CompletableFuture<String> deductStockForOrder(final Orders order) {
 
-        List<OrderProduct> orderProducts = orderProductService.findOrderProductsWithPessimisticWriteLock(order);
-        for (OrderProduct orderProduct : orderProducts) {
-            long newStock = orderProduct.getOption().getStock() - orderProduct.getProductQuantity();
+        List<OrderOption> orderOptions = orderProductService.findOrderProductsWithPessimisticWriteLock(order);
+        for (OrderOption orderOption : orderOptions) {
+            long newStock = orderOption.getOption().getStock() - orderOption.getProductQuantity();
             if (newStock < 0) {
                 log.info("{}", "error");
                 throw new BusinessException(ErrorMessage.INVALID_INPUT_VALUE);
             }
-            orderProduct.getOption().deductionStock(orderProduct.getProductQuantity());
+            orderOption.getOption().deductionStock(orderOption.getProductQuantity());
         }
         return CompletableFuture.completedFuture(null);
     }

@@ -5,7 +5,7 @@ import static com.ll.topcastingbe.domain.order.entity.OrderStatus.ORDER_REFUND_R
 
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderForAdminResponse;
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderResponse;
-import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponse;
+import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponseDto;
 import com.ll.topcastingbe.domain.order.entity.Orders;
 import com.ll.topcastingbe.domain.order.exception.EntityNotFoundException;
 import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
@@ -49,7 +49,7 @@ public class AdminOrderServiceImpl implements AdminOrderService {
         final Orders order = orderService.findByOrderId(orderId);
         final Payment payment = paymentRepository.findByOrder(order)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
-        final List<FindOrderProductResponse> findOrderProductRespons =
+        final List<FindOrderProductResponseDto> findOrderProductRespons =
                 orderProductService.findAllByOrderIdForAdmin(order.getId());
         final FindOrderForAdminResponse findOrderForAdminResponse =
                 FindOrderForAdminResponse.of(order, findOrderProductRespons, payment.getPaymentKey());

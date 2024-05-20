@@ -4,7 +4,6 @@ package com.ll.topcastingbe.domain.order.controller.order;
 import com.ll.topcastingbe.domain.member.entity.Member;
 import com.ll.topcastingbe.domain.order.dto.order.AddOrderDto;
 import com.ll.topcastingbe.domain.order.dto.order.AddOrderResponseDto;
-import com.ll.topcastingbe.domain.order.dto.order.FindOrderDto;
 import com.ll.topcastingbe.domain.order.dto.order.RequestCancelOrderDto;
 import com.ll.topcastingbe.domain.order.dto.order.request.RequestCancelOrderRequest;
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderResponse;
@@ -48,22 +47,21 @@ public class OrderController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/orders/{orderId}")
-    public ResponseEntity<FindOrderDto> orderFind(@PathVariable("orderId") final UUID orderId,
-                                                  @AuthenticationPrincipal final PrincipalDetails principalDetails) {
-        final Member member = principalDetails.getMember();
-        final FindOrderDto findOrderDto = FindOrderDto.of(orderService.findOrder(orderId, member));
+    public ResponseEntity<FindOrderResponse> orderFind(@PathVariable("orderId") final UUID orderId,
+                                                       @AuthenticationPrincipal final PrincipalDetails principalDetails) {
+        Member member = principalDetails.getMember();
+        FindOrderResponse findOrderDto = orderService.findOrder(orderId, member);
 
         return ResponseEntity.ok(findOrderDto);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/orders")
-    public ResponseEntity<List<FindOrderDto>> orderFindAll(
+    public ResponseEntity<List<FindOrderResponse>> orderFindAll(
             @AuthenticationPrincipal final PrincipalDetails principalDetails) {
         final Member member = principalDetails.getMember();
         List<FindOrderResponse> findOrderResponses = orderService.findOrderList(member);
-        final List<FindOrderDto> findOrderDtos = FindOrderDto.ofList(findOrderResponses);
-        return ResponseEntity.ok(findOrderDtos);
+        return ResponseEntity.ok(findOrderResponses);
     }
 
     @PreAuthorize("isAuthenticated()")

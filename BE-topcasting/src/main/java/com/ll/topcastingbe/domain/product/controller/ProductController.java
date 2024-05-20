@@ -33,6 +33,7 @@ public class ProductController {
     private final ProductSearchService productSearchService;
     private final ProductService productService;
 
+    //Todo: 서브이미지 작업
     @GetMapping("/{productId}")
     public ResponseEntity<?> productDetails(@PathVariable Long productId) {
         ProductDetailResponseDto productDto = productService.findProduct(productId);
@@ -65,7 +66,7 @@ public class ProductController {
 
     @GetMapping(params = "keyword")
     public ResponseEntity<?> searchProducts(@RequestParam(value = "keyword") String keyword,
-                                         Pageable pageable) {
+                                            Pageable pageable) {
         Slice<SearchProductDto> searchResult = productSearchService.productsSearch(keyword, pageable);
         return ResponseEntity.ok().body(searchResult);
     }
@@ -78,14 +79,14 @@ public class ProductController {
 
     @GetMapping(params = "maincategory")
     public ResponseEntity<?> mainCategoryProducts(@RequestParam(value = "maincategory") Long id,
-                                               Pageable pageable) {
+                                                  Pageable pageable) {
         Slice<SearchProductDto> mainCategoryProduct = productSearchService.getProductsByMainCategory(pageable, id);
         return ResponseEntity.ok().body(mainCategoryProduct);
     }
 
     @GetMapping(params = "subcategory")
     public ResponseEntity<?> subCategoryProducts(@RequestParam(value = "subcategory") Long id,
-                                              Pageable pageable) {
+                                                 Pageable pageable) {
         Slice<SearchProductDto> subCategoryProduct = productSearchService.getProductsBySubcategory(pageable, id);
         return ResponseEntity.ok().body(subCategoryProduct);
     }
@@ -101,7 +102,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')") //아이템 이름 변경은 관리자만 가능
     @PatchMapping("/{productId}/productPrice")
     public ResponseEntity<?> productPriceModify(@PathVariable Long productId,
-                                             @RequestBody @Valid ProductPriceUpdateRequestDto updateDto) {
+                                                @RequestBody @Valid ProductPriceUpdateRequestDto updateDto) {
         productService.modifyItemPrice(productId, updateDto);
         return ResponseEntity.ok(null);
     }
@@ -109,7 +110,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN')") //아이템 이미지 변경은 관리자만 가능
     @PatchMapping("/{productId}/productImage")
     public ResponseEntity<?> productImageModify(@PathVariable Long productId,
-                                             @RequestBody ProductImageUpdateRequestDto updateDto) {
+                                                @RequestBody ProductImageUpdateRequestDto updateDto) {
 
         //Todo: Exception 고민해보기
         //이미지와 상세이미지 모두 없다면 예외처리

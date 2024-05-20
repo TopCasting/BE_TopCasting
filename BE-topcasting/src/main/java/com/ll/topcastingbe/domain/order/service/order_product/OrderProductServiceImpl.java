@@ -2,13 +2,14 @@ package com.ll.topcastingbe.domain.order.service.order_product;
 
 import com.ll.topcastingbe.domain.cart.entity.CartOption;
 import com.ll.topcastingbe.domain.cart.repository.CartOptionRepository;
+import com.ll.topcastingbe.domain.image.repository.ImageRepository;
 import com.ll.topcastingbe.domain.member.entity.Member;
 import com.ll.topcastingbe.domain.option.entity.Option;
 import com.ll.topcastingbe.domain.option.repository.OptionRepository;
 import com.ll.topcastingbe.domain.order.dto.order_item.request.AddOrderProductRequest;
 import com.ll.topcastingbe.domain.order.dto.order_item.request.ModifyOrderProductRequest;
-import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponse;
-import com.ll.topcastingbe.domain.order.entity.OrderProduct;
+import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponseDto;
+import com.ll.topcastingbe.domain.order.entity.OrderOption;
 import com.ll.topcastingbe.domain.order.entity.Orders;
 import com.ll.topcastingbe.domain.order.exception.EntityNotFoundException;
 import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
@@ -28,6 +29,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     private final OrderProductRepository orderProductRepository;
     private final OrderRepository orderRepository;
     private final CartOptionRepository cartOptionRepository;
+    private final ImageRepository imageRepository;
 
     @Override
     @Transactional
@@ -36,13 +38,13 @@ public class OrderProductServiceImpl implements OrderProductService {
         final CartOption cartOption = cartOptionRepository.findById(addOrderProductRequest.cartProductId())
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
 
-        final OrderProduct orderProduct = OrderProduct.builder()
+        final OrderOption orderOption = OrderOption.builder()
                 .order(order)
                 .option(cartOption.getOption())
                 .productQuantity(addOrderProductRequest.productQuantity())
                 .totalPrice(getTotalPrice(cartOption.getOption(), addOrderProductRequest)).build();
 
-        orderProductRepository.save(orderProduct);
+        orderProductRepository.save(orderOption);
     }
 
     private Long getTotalPrice(final Option option, final AddOrderProductRequest addOrderProductRequest) {
@@ -55,40 +57,45 @@ public class OrderProductServiceImpl implements OrderProductService {
     }
 
     @Override
-    public List<FindOrderProductResponse> findAllByOrderId(final UUID orderId, final Member member) {
+    public List<FindOrderProductResponseDto> findAllByOrderId(UUID orderId, Member member) {
         final Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
 
-        List<OrderProduct> orderProducts = orderProductRepository.findAllByOrder(order);
-        List<FindOrderProductResponse> orderProductResponses = FindOrderProductResponse.ofList(orderProducts);
+        List<OrderOption> orderOptions = orderProductRepository.findAllByOrder(order);
 
-        return orderProductResponses;
+        return orderOptions.stream()
+                .map(orderOption -> FindOrderProductResponseDto.of(orderOption,
+                        imageRepository.findMainImageByProductId(orderOption.getOption().getProduct().getId())))
+                .toList();
     }
 
     @Override
-    public List<FindOrderProductResponse> findAllByOrderIdForAdmin(final UUID orderId) {
+    public List<FindOrderProductResponseDto> findAllByOrderIdForAdmin(final UUID orderId) {
         final Orders order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
 
-        List<OrderProduct> orderProducts = orderProductRepository.findAllByOrder(order);
-        List<FindOrderProductResponse> orderProductResponses = FindOrderProductResponse.ofList(orderProducts);
+        List<OrderOption> orderOptions = orderProductRepository.findAllByOrder(order);
 
-        return orderProductResponses;
+        return orderOptions.stream()
+                .map(orderOption -> FindOrderProductResponseDto.of(orderOption,
+                        imageRepository.findMainImageByProductId(orderOption.getOption().getProduct().getId())))
+                .toList();
     }
 
-    public List<OrderProduct> findOrderProducts(final Orders order) {
-        final List<OrderProduct> orderProducts = orderProductRepository.findAllByOrder(order);
-        return orderProducts;
+    public List<OrderOption> findOrderProducts(final Orders order) {
+        final List<OrderOption> orderOptions = orderProductRepository.findAllByOrder(order);
+        return orderOptions;
     }
 
-    public List<OrderProduct> findOrderProductsWithPessimisticWriteLock(final Orders order) {
-        final List<OrderProduct> orderProducts = orderProductRepository.findAllByOrderWithPessimisticWriteLock(order);
-        return orderProducts;
+    public List<OrderOption> findOrderProductsWithPessimisticWriteLock(final Orders order) {
+        final List<OrderOption> orderOptions = orderProductRepository.findAllByOrderWithPessimisticWriteLock(order);
+        return orderOptions;
     }
 
     @Override
     @Transactional
-    public void updateOrderItem(Long orderProductId, ModifyOrderProductRequest modifyOrderProductRequest, Member member) {
+    public void updateOrderItem(Long orderProductId, ModifyOrderProductRequest modifyOrderProductRequest,
+                                Member member) {
 
     }
 
@@ -97,4 +104,6 @@ public class OrderProductServiceImpl implements OrderProductService {
     public void removeAllByOrder(final Orders order) {
         orderProductRepository.removeAllByOrder(order);
     }
+
+
 }

@@ -1,13 +1,13 @@
 package com.ll.topcastingbe.domain.option.service;
 
-import com.ll.topcastingbe.domain.product.entity.Product;
-import com.ll.topcastingbe.domain.product.exception.ProductNotExistException;
-import com.ll.topcastingbe.domain.product.repository.ProductRepository;
 import com.ll.topcastingbe.domain.option.dto.request.OptionCreateRequestDto;
 import com.ll.topcastingbe.domain.option.dto.request.OptionModifyRequestDto;
 import com.ll.topcastingbe.domain.option.entity.Option;
 import com.ll.topcastingbe.domain.option.exception.OptionNotFoundException;
 import com.ll.topcastingbe.domain.option.repository.OptionRepository;
+import com.ll.topcastingbe.domain.product.entity.Product;
+import com.ll.topcastingbe.domain.product.exception.ProductNotExistException;
+import com.ll.topcastingbe.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +25,8 @@ public class OptionService {
     @Transactional
     public Long addOption(OptionCreateRequestDto createDto) {
         //해당 아이템이 존재하는지 검증
-        Product product = productRepository.findById(createDto.getItemId()).orElseThrow(ProductNotExistException::new);
+        Product product = productRepository.findById(createDto.getProductId())
+                .orElseThrow(ProductNotExistException::new);
 
         //Option 엔티티 생성
         Option option = Option.builder()
@@ -45,6 +46,6 @@ public class OptionService {
         Option option = optionRepository.findById(optionId).orElseThrow(OptionNotFoundException::new);
 
         //옵션 이름과 수량 수정
-        option.change(modifyDto.getColorName(),modifyDto.getStock());
+        option.change(modifyDto.getColorName(), modifyDto.getStock());
     }
 }

@@ -1,11 +1,14 @@
 package com.ll.topcastingbe.domain.cart.service;
 
 import com.ll.topcastingbe.domain.cart.dto.CartOptionListResponseDto;
+import com.ll.topcastingbe.domain.cart.dto.CartOptionResponseDto;
 import com.ll.topcastingbe.domain.cart.entity.Cart;
 import com.ll.topcastingbe.domain.cart.entity.CartOption;
 import com.ll.topcastingbe.domain.cart.exception.CartOptionNotExistException;
 import com.ll.topcastingbe.domain.cart.repository.CartOptionRepository;
 import com.ll.topcastingbe.domain.cart.repository.CartRepository;
+import com.ll.topcastingbe.domain.image.repository.ImageRepository;
+import com.ll.topcastingbe.domain.image.service.ImageService;
 import com.ll.topcastingbe.domain.member.entity.Member;
 import com.ll.topcastingbe.domain.member.exception.UserAndWriterNotMatchException;
 import com.ll.topcastingbe.domain.member.exception.UserNotFoundException;
@@ -29,6 +32,8 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartOptionRepository cartOptionRepository;
     private final OptionRepository optionRepository;
+    private final ImageService imageService;
+    private final ImageRepository imageRepository;
 
     //상품페이지에서 장바구니에 추가를 선택한 경우
     @Transactional
@@ -77,8 +82,16 @@ public class CartService {
         //장바구니가 존재하는지 확인 -> 없으면 생성
         Cart cart = cartRepository.findCartByMemberId(memberId).orElseGet(() -> createCart(memberId));
         List<CartOption> cartOptions = cartOptionRepository.findByCartId(cart.getId());
-        return CartOptionListResponseDto.toDto(cartOptions);
+
+        //CartOptionResponseDto 생성
+        List<CartOptionResponseDto> cartOptionResponseDtos = cartOptions.stream()
+                .map(co -> CartOptionResponseDto.toDto(co,
+                        imageRepository.findMainImageByProductId(co.getOption().getProduct().getId())))
+                .toList();
+        //CartOptionListResponseDto 생성
+        return CartOptionListResponseDto.toDto(cartOptionResponseDtos);
     }
+
 
     @Transactional
     public void removeCartOption(Long memberId, Long cartOptionId) {

@@ -9,5 +9,4 @@ public class SearchProductDto {
     private String productName;
     private BigDecimal productPrice;
     private String imageUrl;
-    private Long totalOrderedCount;
 }

@@ -1,6 +1,6 @@
 package com.ll.topcastingbe.domain.order.dto.order.response;
 
-import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponse;
+import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponseDto;
 import com.ll.topcastingbe.domain.order.entity.Orders;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,9 +16,10 @@ public record FindOrderResponse(UUID orderId,
                                 LocalDateTime orderCreatedDate,
                                 Long totalProductQuantity,
                                 Long totalProductPrice,
-                                List<FindOrderProductResponse> findOrderProductRespons) {
+                                List<FindOrderProductResponseDto> findOrderProductRespons) {
 
-    public static FindOrderResponse of(final Orders order, final List<FindOrderProductResponse> findOrderProductRespons) {
+    public static FindOrderResponse of(final Orders order,
+                                       final List<FindOrderProductResponseDto> findOrderProductRespons) {
         FindOrderResponse findOrdersResponse = FindOrderResponse.builder()
                 .orderId(order.getId())
                 .customerName(order.getCustomerName())

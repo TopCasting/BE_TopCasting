@@ -22,8 +22,8 @@ public record AddOrderRequest(String customerName,
                 .customerName(customerName)
                 .customerAddress(customerAddress)
                 .customerPhoneNumber(customerPhoneNumber)
-                .totalItemQuantity(totalProductQuantity)
-                .totalItemPrice(totalProductPrice)
+                .totalProductQuantity(totalProductQuantity)
+                .totalProductQuantity(totalProductPrice)
                 .build();
 
         return orders;

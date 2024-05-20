@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OrderProduct {
+public class OrderOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,7 +37,4 @@ public class OrderProduct {
         return this.option.getProduct().getProductName();
     }
 
-    public String getProductImagePath() {
-        return this.option.getProduct().getImage().getPath();
-    }
 }
