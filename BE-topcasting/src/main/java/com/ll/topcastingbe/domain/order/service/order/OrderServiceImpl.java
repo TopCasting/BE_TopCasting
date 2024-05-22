@@ -13,11 +13,10 @@ import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProduct
 import com.ll.topcastingbe.domain.order.entity.OrderOption;
 import com.ll.topcastingbe.domain.order.entity.OrderStatus;
 import com.ll.topcastingbe.domain.order.entity.Orders;
-import com.ll.topcastingbe.domain.order.exception.BusinessException;
-import com.ll.topcastingbe.domain.order.exception.EntityNotFoundException;
-import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
 import com.ll.topcastingbe.domain.order.repository.order.OrderRepository;
 import com.ll.topcastingbe.domain.order.service.order_product.OrderProductService;
+import com.ll.topcastingbe.global.exception.order.OrderErrorMessage;
+import com.ll.topcastingbe.global.exception.order.OrderNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -95,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Orders findByOrderId(final UUID orderId) {
         final Orders order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new OrderNotFoundException());
         return order;
     }
 
@@ -149,7 +148,8 @@ public class OrderServiceImpl implements OrderService {
             long newStock = orderOption.getOption().getStock() - orderOption.getProductQuantity();
             if (newStock < 0) {
                 log.info("{}", "error");
-                throw new BusinessException(ErrorMessage.INVALID_INPUT_VALUE);
+                //Todo: 예외 수정
+                throw new IllegalArgumentException(OrderErrorMessage.INVALID_INPUT_VALUE.getMessage());
             }
             orderOption.getOption().deductionStock(orderOption.getProductQuantity());
         }
@@ -159,7 +159,8 @@ public class OrderServiceImpl implements OrderService {
     private void checkTotalProductPrice(final Orders order) {
         Long totalProductPrice = getTotalProductPrice(order);
         if (!Objects.equals(totalProductPrice, order.getTotalProductPrice())) {
-            throw new BusinessException(ErrorMessage.INVALID_INPUT_VALUE);
+            //Todo: 예외 수정
+            throw new IllegalArgumentException(OrderErrorMessage.INVALID_INPUT_VALUE.getMessage());
         }
     }
 

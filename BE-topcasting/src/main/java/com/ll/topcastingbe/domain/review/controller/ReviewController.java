@@ -1,7 +1,7 @@
 package com.ll.topcastingbe.domain.review.controller;
 
 import com.ll.topcastingbe.domain.member.entity.Member;
-import com.ll.topcastingbe.domain.member.exception.UserAndWriterNotMatchException;
+import com.ll.topcastingbe.global.exception.member.UserAndWriterNotMatchException;
 import com.ll.topcastingbe.domain.member.service.MemberService;
 import com.ll.topcastingbe.domain.review.dto.AddNormalReviewRequestDto;
 import com.ll.topcastingbe.domain.review.dto.ModifyReviewRequestDto;
@@ -63,8 +63,8 @@ public class ReviewController {
                                                              @RequestBody AddNormalReviewRequestDto addNormalReviewRequestDto) {
         Member member = principalDetails.getMember();
         return ResponseEntity.ok()
-                       .body(reviewService.addNormalReview(productName, member, orderId,
-                               addNormalReviewRequestDto));
+                .body(reviewService.addNormalReview(productName, member, orderId,
+                        addNormalReviewRequestDto));
     }
 
     //리뷰 수정
@@ -76,7 +76,7 @@ public class ReviewController {
             throw new UserAndWriterNotMatchException();
         }
         return ResponseEntity.ok()
-                       .body(reviewService.modifyReview(reviewId, modifyReviewRequestDto));
+                .body(reviewService.modifyReview(reviewId, modifyReviewRequestDto));
     }
 
     //리뷰 삭제

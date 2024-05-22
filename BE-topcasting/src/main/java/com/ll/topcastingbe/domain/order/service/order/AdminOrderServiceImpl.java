@@ -7,12 +7,11 @@ import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderForAdminResp
 import com.ll.topcastingbe.domain.order.dto.order.response.FindOrderResponse;
 import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponseDto;
 import com.ll.topcastingbe.domain.order.entity.Orders;
-import com.ll.topcastingbe.domain.order.exception.EntityNotFoundException;
-import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
 import com.ll.topcastingbe.domain.order.repository.order.OrderRepository;
 import com.ll.topcastingbe.domain.order.service.order_product.OrderProductService;
 import com.ll.topcastingbe.domain.payment.entity.Payment;
 import com.ll.topcastingbe.domain.payment.repository.PaymentRepository;
+import com.ll.topcastingbe.global.exception.order.OrderNotFoundException;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +47,7 @@ public class AdminOrderServiceImpl implements AdminOrderService {
     public FindOrderForAdminResponse findOrderForAdmin(final UUID orderId) {
         final Orders order = orderService.findByOrderId(orderId);
         final Payment payment = paymentRepository.findByOrder(order)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new OrderNotFoundException());
         final List<FindOrderProductResponseDto> findOrderProductRespons =
                 orderProductService.findAllByOrderIdForAdmin(order.getId());
         final FindOrderForAdminResponse findOrderForAdminResponse =
