@@ -11,6 +11,7 @@ import com.ll.topcastingbe.domain.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -59,7 +60,7 @@ public class ProductController {
 
     @GetMapping("")
     public ResponseEntity<?> productsList(Pageable pageable) {
-        Slice<SearchProductDto> productList = productSearchService.getProducts(pageable);
+        Page<SearchProductDto> productList = productSearchService.getProducts(pageable);
         return ResponseEntity.ok().body(productList);
     }
 
@@ -67,27 +68,21 @@ public class ProductController {
     @GetMapping(params = "keyword")
     public ResponseEntity<?> searchProducts(@RequestParam(value = "keyword") String keyword,
                                             Pageable pageable) {
-        Slice<SearchProductDto> searchResult = productSearchService.productsSearch(keyword, pageable);
+        Page<SearchProductDto> searchResult = productSearchService.productsSearch(keyword, pageable);
         return ResponseEntity.ok().body(searchResult);
-    }
-
-    @GetMapping(params = "sort")
-    public ResponseEntity<?> searchSort(Pageable pageable) {
-        Slice<SearchProductDto> sortProductResult = productSearchService.sortSearch(pageable);
-        return ResponseEntity.ok().body(sortProductResult);
     }
 
     @GetMapping(params = "maincategory")
     public ResponseEntity<?> mainCategoryProducts(@RequestParam(value = "maincategory") Long id,
                                                   Pageable pageable) {
-        Slice<SearchProductDto> mainCategoryProduct = productSearchService.getProductsByMainCategory(pageable, id);
+        Page<SearchProductDto> mainCategoryProduct = productSearchService.getProductsByMainCategory(pageable, id);
         return ResponseEntity.ok().body(mainCategoryProduct);
     }
 
     @GetMapping(params = "subcategory")
     public ResponseEntity<?> subCategoryProducts(@RequestParam(value = "subcategory") Long id,
                                                  Pageable pageable) {
-        Slice<SearchProductDto> subCategoryProduct = productSearchService.getProductsBySubcategory(pageable, id);
+        Page<SearchProductDto> subCategoryProduct = productSearchService.getProductsBySubcategory(pageable, id);
         return ResponseEntity.ok().body(subCategoryProduct);
     }
 
