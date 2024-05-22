@@ -2,12 +2,11 @@ package com.ll.topcastingbe.domain.payment.service;
 
 import com.ll.topcastingbe.domain.order.entity.OrderStatus;
 import com.ll.topcastingbe.domain.order.entity.Orders;
-import com.ll.topcastingbe.domain.order.exception.BusinessException;
-import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
 import com.ll.topcastingbe.domain.order.service.order.OrderService;
 import com.ll.topcastingbe.domain.payment.dto.response.AddTossPaymentResponse;
 import com.ll.topcastingbe.domain.payment.entity.Payment;
 import com.ll.topcastingbe.domain.payment.repository.PaymentRepository;
+import com.ll.topcastingbe.global.exception.order.OrderErrorMessage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -94,7 +93,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     private void checkOrderPrice(final Orders order, final Long price) {
         if (!Objects.equals(order.getTotalProductPrice(), price)) {
-            throw new BusinessException(ErrorMessage.INVALID_INPUT_VALUE);
+            //Todo: 예외 수정
+            throw new IllegalArgumentException(OrderErrorMessage.INVALID_INPUT_VALUE.getMessage());
         }
     }
 }

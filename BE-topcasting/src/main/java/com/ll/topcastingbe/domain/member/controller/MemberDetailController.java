@@ -4,7 +4,7 @@ import com.ll.topcastingbe.domain.address.entity.Address;
 import com.ll.topcastingbe.domain.address.service.AddressService;
 import com.ll.topcastingbe.domain.member.dto.MemberDetailsResponseDto;
 import com.ll.topcastingbe.domain.member.dto.MemberModifyRequestDto;
-import com.ll.topcastingbe.domain.member.exception.PasswordAndPasswordCheckNotMatchException;
+import com.ll.topcastingbe.global.exception.member.PasswordAndPasswordCheckNotMatchException;
 import com.ll.topcastingbe.domain.member.service.MemberService;
 import com.ll.topcastingbe.global.security.auth.PrincipalDetails;
 import jakarta.validation.Valid;
@@ -73,7 +73,7 @@ public class MemberDetailController {
     public ResponseEntity<?> usernameVerify(@PathVariable String username) {
         if (memberService.verifyUsername(username)) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                           .body("이미 존재하는 아이디입니다.");
+                    .body("이미 존재하는 아이디입니다.");
         }
         return ResponseEntity.ok("사용가능한 아이디입니다.");
     }
@@ -83,7 +83,7 @@ public class MemberDetailController {
     public ResponseEntity<?> nicknameVerify(@PathVariable String nickname) {
         if (memberService.verifyNickname(nickname)) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                           .body("이미 존재하는 닉네임입니다.");
+                    .body("이미 존재하는 닉네임입니다.");
         }
         return ResponseEntity.ok("사용가능한 닉네임입니다.");
     }

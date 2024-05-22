@@ -11,10 +11,9 @@ import com.ll.topcastingbe.domain.order.dto.order_item.request.ModifyOrderProduc
 import com.ll.topcastingbe.domain.order.dto.order_item.response.FindOrderProductResponseDto;
 import com.ll.topcastingbe.domain.order.entity.OrderOption;
 import com.ll.topcastingbe.domain.order.entity.Orders;
-import com.ll.topcastingbe.domain.order.exception.EntityNotFoundException;
-import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
 import com.ll.topcastingbe.domain.order.repository.order.OrderRepository;
 import com.ll.topcastingbe.domain.order.repository.order_product.OrderProductRepository;
+import com.ll.topcastingbe.global.exception.order.OrderNotFoundException;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +35,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     //todo save가 두 번 호출되므로 정상적인지는 잘 모르겠음
     public void addOrderProduct(Orders order, AddOrderProductRequest addOrderProductRequest) {
         final CartOption cartOption = cartOptionRepository.findById(addOrderProductRequest.cartProductId())
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new OrderNotFoundException());
 
         final OrderOption orderOption = OrderOption.builder()
                 .order(order)
@@ -59,7 +58,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Override
     public List<FindOrderProductResponseDto> findAllByOrderId(UUID orderId, Member member) {
         final Orders order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new OrderNotFoundException());
 
         List<OrderOption> orderOptions = orderProductRepository.findAllByOrder(order);
 
@@ -72,7 +71,7 @@ public class OrderProductServiceImpl implements OrderProductService {
     @Override
     public List<FindOrderProductResponseDto> findAllByOrderIdForAdmin(final UUID orderId) {
         final Orders order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new OrderNotFoundException());
 
         List<OrderOption> orderOptions = orderProductRepository.findAllByOrder(order);
 

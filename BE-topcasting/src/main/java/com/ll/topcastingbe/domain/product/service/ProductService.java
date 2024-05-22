@@ -1,8 +1,6 @@
 package com.ll.topcastingbe.domain.product.service;
 
 import com.ll.topcastingbe.domain.category.entity.SubCategory;
-import com.ll.topcastingbe.domain.category.exception.CategoryErrorMessage;
-import com.ll.topcastingbe.domain.category.exception.CategoryNotExistException;
 import com.ll.topcastingbe.domain.category.repository.SubCategoryRepository;
 import com.ll.topcastingbe.domain.image.entity.DetailedImage;
 import com.ll.topcastingbe.domain.image.entity.Image;
@@ -17,8 +15,9 @@ import com.ll.topcastingbe.domain.product.dto.request.ProductNameUpdateRequestDt
 import com.ll.topcastingbe.domain.product.dto.request.ProductPriceUpdateRequestDto;
 import com.ll.topcastingbe.domain.product.dto.response.ProductDetailResponseDto;
 import com.ll.topcastingbe.domain.product.entity.Product;
-import com.ll.topcastingbe.domain.product.exception.ProductNotExistException;
+import com.ll.topcastingbe.global.exception.product.ProductNotExistException;
 import com.ll.topcastingbe.domain.product.repository.ProductRepository;
+import com.ll.topcastingbe.global.exception.category.CategoryNotExistException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +57,7 @@ public class ProductService {
         //요청된 카테고리가 있는지 검증
         SubCategory subCategory = subCategoryRepository.findByMainCategoryIdAndSubcategoryId(
                         productRequestDto.getMainCategoryId(), productRequestDto.getSubCategoryId())
-                .orElseThrow(() -> new CategoryNotExistException(CategoryErrorMessage.CATEGORY_NOT_EXIST));
+                .orElseThrow(() -> new CategoryNotExistException());
 
         //아이템 엔티티 생성
         Product product = Product.builder()

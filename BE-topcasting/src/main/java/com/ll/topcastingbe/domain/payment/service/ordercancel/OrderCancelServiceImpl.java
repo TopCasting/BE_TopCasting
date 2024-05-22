@@ -1,14 +1,13 @@
 package com.ll.topcastingbe.domain.payment.service.ordercancel;
 
 import com.ll.topcastingbe.domain.order.entity.OrderStatus;
-import com.ll.topcastingbe.domain.order.exception.BusinessException;
-import com.ll.topcastingbe.domain.order.exception.EntityNotFoundException;
-import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
 import com.ll.topcastingbe.domain.payment.entity.OrderCancel;
 import com.ll.topcastingbe.domain.payment.entity.Payment;
 import com.ll.topcastingbe.domain.payment.repository.PaymentRepository;
 import com.ll.topcastingbe.domain.payment.repository.ordercancel.OrderCancelRepository;
 import com.ll.topcastingbe.domain.payment.service.TossPaymentConfig;
+import com.ll.topcastingbe.global.exception.order.OrderErrorMessage;
+import com.ll.topcastingbe.global.exception.order.OrderNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -35,7 +34,7 @@ public class OrderCancelServiceImpl implements OrderCancelService {
         requestCancelPaymentAccept(paymentKey, cancelReason);
 
         final Payment payment = paymentRepository.findByPaymentKey(paymentKey)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.INVALID_INPUT_VALUE));
+                .orElseThrow(() -> new OrderNotFoundException(OrderErrorMessage.INVALID_INPUT_VALUE.getMessage()));
         final OrderCancel orderCancel = OrderCancel.builder()
                 .payment(payment)
                 .reason(cancelReason)
@@ -53,10 +52,10 @@ public class OrderCancelServiceImpl implements OrderCancelService {
                 .method("POST", HttpRequest.BodyPublishers.ofString("{\"cancelReason\":\"" + cancelReason + "\"}"))
                 .build();
         final HttpResponse<String> response = sendTossPaymentCancelRequest(request);
-
         final int statusCode = response.statusCode();
         if (statusCode != HttpStatus.OK.value()) {
-            throw new BusinessException(ErrorMessage.INVALID_INPUT_VALUE);
+            //Todo: 예외 수정
+            throw new IllegalArgumentException(OrderErrorMessage.INVALID_INPUT_VALUE.getMessage());
         }
     }
 

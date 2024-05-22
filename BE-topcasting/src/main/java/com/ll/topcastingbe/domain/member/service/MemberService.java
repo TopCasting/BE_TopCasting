@@ -10,10 +10,10 @@ import com.ll.topcastingbe.domain.member.dto.JoinRequestDto;
 import com.ll.topcastingbe.domain.member.dto.MemberInfoResponseDto;
 import com.ll.topcastingbe.domain.address.entity.Address;
 import com.ll.topcastingbe.domain.member.entity.Member;
-import com.ll.topcastingbe.domain.member.exception.NicknameExistsException;
-import com.ll.topcastingbe.domain.member.exception.PasswordNotMatchException;
-import com.ll.topcastingbe.domain.member.exception.UsernameExistsException;
-import com.ll.topcastingbe.domain.member.exception.UserNotFoundException;
+import com.ll.topcastingbe.global.exception.member.NicknameExistsException;
+import com.ll.topcastingbe.global.exception.member.PasswordNotMatchException;
+import com.ll.topcastingbe.global.exception.member.UsernameExistsException;
+import com.ll.topcastingbe.global.exception.member.UserNotFoundException;
 import com.ll.topcastingbe.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,32 +40,32 @@ public class MemberService {
         if (checkUsername(joinRequestDto.getUsername())) {
             throw new UsernameExistsException();
         }
-        
+
         if (!joinRequestDto.getPassword().equals(joinRequestDto.getPasswordCheck())) {
             throw new PasswordNotMatchException();
         }
         if (checkNickname(joinRequestDto.getNickname())) {
             throw new NicknameExistsException();
         }
-        
+
         Member member = Member.builder()
-                                .username(joinRequestDto.getUsername())
-                                .password(passwordEncoder.encode(joinRequestDto.getPassword()))
-                                .nickname(joinRequestDto.getNickname())
-                                .name(joinRequestDto.getName())
-                                .email(joinRequestDto.getEmail())
-                                .birthDate(joinRequestDto.getBirthDate())
-                                .phoneNumber(joinRequestDto.getPhoneNumber())
-                                .build();
+                .username(joinRequestDto.getUsername())
+                .password(passwordEncoder.encode(joinRequestDto.getPassword()))
+                .nickname(joinRequestDto.getNickname())
+                .name(joinRequestDto.getName())
+                .email(joinRequestDto.getEmail())
+                .birthDate(joinRequestDto.getBirthDate())
+                .phoneNumber(joinRequestDto.getPhoneNumber())
+                .build();
         member.grantRole();
         memberRepository.save(member);
 
         Address address = Address.builder()
-                                  .member(member)
-                                  .primaryAddress(joinRequestDto.getPrimaryAddress())
-                                  .secondaryAddress(joinRequestDto.getSecondaryAddress())
-                                  .zipcode(joinRequestDto.getZipcode())
-                                  .build();
+                .member(member)
+                .primaryAddress(joinRequestDto.getPrimaryAddress())
+                .secondaryAddress(joinRequestDto.getSecondaryAddress())
+                .zipcode(joinRequestDto.getZipcode())
+                .build();
 
         addressRepository.save(address);
 
@@ -130,11 +130,11 @@ public class MemberService {
             return;
         }
         Address address = Address.builder()
-                                  .primaryAddress(requestDto.getAddress1())
-                                  .secondaryAddress(requestDto.getAddress2())
-                                  .zipcode(requestDto.getZipcode())
-                                  .build();
-        findMember.changeDetailsForSicailLogin(requestDto.getNickname(),requestDto.getPhoneNumber(),
+                .primaryAddress(requestDto.getAddress1())
+                .secondaryAddress(requestDto.getAddress2())
+                .zipcode(requestDto.getZipcode())
+                .build();
+        findMember.changeDetailsForSicailLogin(requestDto.getNickname(), requestDto.getPhoneNumber(),
                 requestDto.getBirthDate());
         addressRepository.save(address);
         findMember.grantRole();
