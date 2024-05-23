@@ -10,6 +10,7 @@ import com.ll.topcastingbe.domain.member.repository.RefreshTokenRepository;
 import com.ll.topcastingbe.global.security.JwtProps;
 import com.ll.topcastingbe.global.security.SecurityConstants;
 import com.ll.topcastingbe.global.security.auth.PrincipalDetails;
+import com.ll.topcastingbe.global.security.exception.InvalidCredentialsException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -49,8 +50,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String header = request.getHeader(SecurityConstants.TOKEN_HEADER);
 
         if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX) || header == "Bearer undifined") {
-            chain.doFilter(request, response);
-            return;
+//            chain.doFilter(request, response);
+            throw new InvalidCredentialsException("로그인 권한이 필요합니다.");
         }
         String accessToken = request.getHeader(SecurityConstants.TOKEN_HEADER)
                                      .replace(SecurityConstants.TOKEN_PREFIX, "");

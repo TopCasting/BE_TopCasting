@@ -3,6 +3,7 @@ package com.ll.topcastingbe.global.security;
 import com.ll.topcastingbe.domain.member.repository.MemberRepository;
 import com.ll.topcastingbe.domain.member.repository.RefreshTokenRepository;
 import com.ll.topcastingbe.global.security.auth.PrincipalOauth2UserService;
+import com.ll.topcastingbe.global.security.exception.JwtAuthorizationExceptionFilter;
 import com.ll.topcastingbe.global.security.jwt.JwtAuthenticationFilter;
 import com.ll.topcastingbe.global.security.jwt.JwtAuthorizationFilter;
 import com.ll.topcastingbe.global.security.oauth2.CustomSuccessHandler;
@@ -21,6 +22,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -112,6 +114,7 @@ public class ApiSecurityConfig {
                                         .successHandler(successHandler)
                 )
 //                .addFilter(corsFilter) // 컨트롤러 - @CrossOrigin(인증 x), 필터에 등록 (인증 o)
+                .addFilterBefore(new JwtAuthorizationExceptionFilter(), BasicAuthenticationFilter.class) //모든 필터앞에 예외처리 필터
                 .addFilter(
                         new JwtAuthenticationFilter(authenticationManager(), jwtProps, refreshTokenRepository))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberRepository, jwtProps,

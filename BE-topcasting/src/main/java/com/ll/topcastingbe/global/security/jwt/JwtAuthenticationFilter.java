@@ -10,6 +10,7 @@ import com.ll.topcastingbe.global.security.JwtProps;
 import com.ll.topcastingbe.global.security.SecurityConstants;
 import com.ll.topcastingbe.global.security.auth.PrincipalDetails;
 import com.ll.topcastingbe.global.security.exception.CustomAuthenticationFailureHandler;
+import com.ll.topcastingbe.global.security.exception.InvalidCredentialsException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
