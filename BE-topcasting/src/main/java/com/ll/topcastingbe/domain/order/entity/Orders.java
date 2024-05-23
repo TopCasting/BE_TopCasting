@@ -2,9 +2,8 @@ package com.ll.topcastingbe.domain.order.entity;
 
 import com.ll.topcastingbe.domain.member.entity.Member;
 import com.ll.topcastingbe.domain.order.dto.order.request.ModifyOrderRequest;
-import com.ll.topcastingbe.domain.order.exception.AuthException;
-import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
 import com.ll.topcastingbe.global.entity.BaseEntity;
+import com.ll.topcastingbe.global.exception.order.AuthException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -52,7 +51,7 @@ public class Orders extends BaseEntity {
 
     public void checkAuthorizedMember(final Member member) {
         if (!Objects.equals(this.member.getId(), member.getId())) {
-            throw new AuthException(ErrorMessage.UNAUTHORIZED_USER);
+            throw new AuthException();
         }
     }
 

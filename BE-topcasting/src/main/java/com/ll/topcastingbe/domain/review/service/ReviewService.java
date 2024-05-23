@@ -2,12 +2,9 @@ package com.ll.topcastingbe.domain.review.service;
 
 
 import com.ll.topcastingbe.domain.member.entity.Member;
-import com.ll.topcastingbe.domain.member.exception.UserNotFoundException;
 import com.ll.topcastingbe.domain.member.repository.MemberRepository;
 import com.ll.topcastingbe.domain.order.entity.OrderOption;
 import com.ll.topcastingbe.domain.order.entity.Orders;
-import com.ll.topcastingbe.domain.order.exception.EntityNotFoundException;
-import com.ll.topcastingbe.domain.order.exception.ErrorMessage;
 import com.ll.topcastingbe.domain.order.repository.order.OrderRepository;
 import com.ll.topcastingbe.domain.order.repository.order_product.OrderProductRepository;
 import com.ll.topcastingbe.domain.review.dto.AddNormalReviewRequestDto;
@@ -15,9 +12,11 @@ import com.ll.topcastingbe.domain.review.dto.ModifyReviewRequestDto;
 import com.ll.topcastingbe.domain.review.dto.ReviewDetailResponseDto;
 import com.ll.topcastingbe.domain.review.dto.ReviewListResponseDto;
 import com.ll.topcastingbe.domain.review.entity.Review;
-import com.ll.topcastingbe.domain.review.exception.DuplicateReviewException;
-import com.ll.topcastingbe.domain.review.exception.ReviewNotFoundException;
 import com.ll.topcastingbe.domain.review.repository.ReviewRepository;
+import com.ll.topcastingbe.global.exception.member.UserNotFoundException;
+import com.ll.topcastingbe.global.exception.order.OrderNotFoundException;
+import com.ll.topcastingbe.global.exception.review.DuplicateReviewException;
+import com.ll.topcastingbe.global.exception.review.ReviewNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -61,13 +60,13 @@ public class ReviewService {
                                                    AddNormalReviewRequestDto addNormalReviewRequestDto) {
 
         Orders orders = orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new OrderNotFoundException());
         List<OrderOption> findOrderOptions = orderProductRepository.findByOrder(orders);
         OrderOption findOrderOption = findOrderOptions.stream()
                 .filter(orderProduct -> orderProduct.getProductName().equals(productName))
                 .findFirst()
                 .orElseThrow(
-                        () -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+                        () -> new OrderNotFoundException());
 
         Review review = Review.builder()
                 .writer(member)
@@ -132,14 +131,14 @@ public class ReviewService {
     public void verifyReview(String productName, UUID orderId) {
 
         Orders findOrders = orderRepository.findById(orderId)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+                .orElseThrow(() -> new OrderNotFoundException());
 
         List<OrderOption> findOrderOptions = orderProductRepository.findByOrder(findOrders);
         OrderOption findOrderOption = findOrderOptions.stream()
                 .filter(orderProduct -> orderProduct.getProductName().equals(productName))
                 .findFirst()
                 .orElseThrow(
-                        () -> new EntityNotFoundException(ErrorMessage.ENTITY_NOT_FOUND));
+                        () -> new OrderNotFoundException());
 
         Long reviewCount = reviewRepository.countReviewsByOrderProduct(findOrderOption);
 
