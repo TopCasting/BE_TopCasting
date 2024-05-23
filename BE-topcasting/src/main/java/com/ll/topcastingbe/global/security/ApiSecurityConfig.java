@@ -39,6 +39,7 @@ public class ApiSecurityConfig {
     private final PrincipalOauth2UserService oauth2UserService;
     private final CustomSuccessHandler successHandler;
 
+
     @Value("${custom.site.front_url}")
     private String frontUrl;
 
@@ -112,8 +113,7 @@ public class ApiSecurityConfig {
                 )
 //                .addFilter(corsFilter) // 컨트롤러 - @CrossOrigin(인증 x), 필터에 등록 (인증 o)
                 .addFilter(
-                        new JwtAuthenticationFilter(authenticationManager(), jwtProps, refreshTokenRepository,
-                                memberRepository))
+                        new JwtAuthenticationFilter(authenticationManager(), jwtProps, refreshTokenRepository))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberRepository, jwtProps,
                         refreshTokenRepository));
 
