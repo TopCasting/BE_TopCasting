@@ -50,8 +50,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String header = request.getHeader(SecurityConstants.TOKEN_HEADER);
 
         if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX) || header == "Bearer undifined") {
-//            chain.doFilter(request, response);
-            throw new InvalidCredentialsException("로그인 권한이 필요합니다.");
+            chain.doFilter(request, response);
         }
         String accessToken = request.getHeader(SecurityConstants.TOKEN_HEADER)
                                      .replace(SecurityConstants.TOKEN_PREFIX, "");
@@ -88,8 +87,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 //검증 실패시 uncheck
                 findRefreshToken.uncheck();
                 response.sendRedirect(frontUrl+"/login");
-                chain.doFilter(request, response);
-                return;
+                throw new InvalidCredentialsException("로그인 권한이 필요합니다.");
+                //chain.doFilter(request, response);
+                //return;
             }
 
             String newAccessToken = JWT.create()
