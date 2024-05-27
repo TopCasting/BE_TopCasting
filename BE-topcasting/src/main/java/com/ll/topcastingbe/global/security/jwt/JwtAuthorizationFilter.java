@@ -10,6 +10,7 @@ import com.ll.topcastingbe.domain.member.repository.RefreshTokenRepository;
 import com.ll.topcastingbe.global.security.JwtProps;
 import com.ll.topcastingbe.global.security.SecurityConstants;
 import com.ll.topcastingbe.global.security.auth.PrincipalDetails;
+import com.ll.topcastingbe.global.security.exception.InvalidCredentialsException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -50,7 +51,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         if (header == null || !header.startsWith(SecurityConstants.TOKEN_PREFIX) || header == "Bearer undifined") {
             chain.doFilter(request, response);
-            return;
         }
         String accessToken = request.getHeader(SecurityConstants.TOKEN_HEADER)
                                      .replace(SecurityConstants.TOKEN_PREFIX, "");
@@ -87,8 +87,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 //검증 실패시 uncheck
                 findRefreshToken.uncheck();
                 response.sendRedirect(frontUrl+"/login");
-                chain.doFilter(request, response);
-                return;
+                throw new InvalidCredentialsException("로그인 권한이 필요합니다.");
+                //chain.doFilter(request, response);
+                //return;
             }
 
             String newAccessToken = JWT.create()

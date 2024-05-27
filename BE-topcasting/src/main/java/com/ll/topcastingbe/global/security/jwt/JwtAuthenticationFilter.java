@@ -5,11 +5,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ll.topcastingbe.domain.member.dto.LoginRequestDto;
 import com.ll.topcastingbe.domain.member.entity.RefreshToken;
-import com.ll.topcastingbe.domain.member.repository.MemberRepository;
 import com.ll.topcastingbe.domain.member.repository.RefreshTokenRepository;
 import com.ll.topcastingbe.global.security.JwtProps;
 import com.ll.topcastingbe.global.security.SecurityConstants;
 import com.ll.topcastingbe.global.security.auth.PrincipalDetails;
+import com.ll.topcastingbe.global.security.exception.CustomAuthenticationFailureHandler;
+import com.ll.topcastingbe.global.security.exception.InvalidCredentialsException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -23,20 +24,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     private final JwtProps jwtProps;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final MemberRepository memberRepository;
+
+
+
 
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProps jwtProps,
-                                   RefreshTokenRepository refreshTokenRepository, MemberRepository memberRepository) {
+                                   RefreshTokenRepository refreshTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtProps = jwtProps;
         this.refreshTokenRepository = refreshTokenRepository;
-        this.memberRepository = memberRepository;
         setFilterProcessesUrl("/api/v1/auth/login");
+        setAuthenticationFailureHandler(new CustomAuthenticationFailureHandler());
     }
 
     // login요청시 로그인 시도를 위해서 실행되는 함수 ( 실행 순서 1)
@@ -58,9 +62,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                         loginRequestDto.getUsername(),
                         loginRequestDto.getPassword());
 
-        Authentication authentication =
-                authenticationManager.authenticate(authenticationToken);
-        return authentication; // 세션에 저장
+
+        Authentication authentication = authenticationManager.authenticate(authenticationToken);
+        return authentication;
     }
 
     //성공시 실행 - JWT 토큰 생성해서 response에 담아주기

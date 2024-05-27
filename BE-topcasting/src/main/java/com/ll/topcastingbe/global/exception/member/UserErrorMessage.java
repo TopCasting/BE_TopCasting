@@ -13,7 +13,8 @@ public enum UserErrorMessage {
     USERNAME_ALREADY_EXISTS("중복되는 아이디가 존재합니다."),
     NICKNAME_ALREADY_EXISTS("중복되는 닉네임이 존재합니다."),
     PASSWORD_AND_PASSWORD_CHECK_NOT_MATCH("패스워드를 다시 한번 확인해주세요"),
-    PASSWORD_NOT_MATCH("패스워드가 일치하지 않습니다.");
+    PASSWORD_NOT_MATCH("패스워드가 일치하지 않습니다."),
+    INVALID_CREDENTIALS("아이디, 비밀번호를 다시 확인해주세요");
 
 
     private final String message;
